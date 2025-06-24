@@ -55,9 +55,9 @@ async function main() {
     { nombre: "editar_categorias", descripcion: "Permiso para editar categorias" },
 
     // unidades de medida
-    { nombre: "ver_unidades_medida", descripcion: "Permiso para ver las unidades de medida" },
-    { nombre: "crear_unidades_medida", descripcion: "Permiso para crear unidades de medida" },
-    { nombre: "editar_unidades_medida", descripcion: "Permiso para editar unidades de medida" },
+    { nombre: "ver_unidad_medidas", descripcion: "Permiso para ver las unidades de medida" },
+    { nombre: "crear_unidad_medidas", descripcion: "Permiso para crear unidades de medida" },
+    { nombre: "editar_unidad_medidas", descripcion: "Permiso para editar unidades de medida" },
 
     // monedas
     { nombre: "ver_monedas", descripcion: "Permiso para ver las monedas" },

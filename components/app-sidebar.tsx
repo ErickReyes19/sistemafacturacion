@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, ScaleIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -83,6 +83,12 @@ const items = [
     url: "/categorias",
     icon: LayersIcon,
     permiso: "ver_categorias",
+  },
+  {
+    title: "Unidades de Medida",
+    url: "/unidad-medidas",
+    icon: ScaleIcon,
+    permiso: "ver_unidad_medidas",
   },
 
 
