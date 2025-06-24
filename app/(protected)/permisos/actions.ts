@@ -16,7 +16,7 @@ export async function getPermisos(): Promise<PermisoDTO[]> {
     return permisos.map((p) => ({
       id: p.id,
       nombre: p.nombre,
-      descripcion: p.descripcion,
+      descripcion: p.descripcion ?? "",
       activo: p.activo,
 
     }));

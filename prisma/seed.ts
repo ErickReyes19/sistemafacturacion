@@ -10,7 +10,7 @@ async function main() {
   if (resetData) {
     await prisma.rolPermiso.deleteMany();
     await prisma.usuarios.deleteMany();
-    await prisma.empleados.deleteMany();
+    await prisma.empleado.deleteMany();
     await prisma.puesto.deleteMany();
     await prisma.rol.deleteMany();
     await prisma.permiso.deleteMany();
@@ -48,6 +48,27 @@ async function main() {
     { nombre: "ver_servicios", descripcion: "Permiso para ver los servicios" },
     { nombre: "crear_servicios", descripcion: "Permiso para crear servicios" },
     { nombre: "editar_servicios", descripcion: "Permiso para editar servicios" },
+
+    // categorias productos
+    { nombre: "ver_categorias", descripcion: "Permiso para ver las categorias" },
+    { nombre: "crear_categorias", descripcion: "Permiso para crear categorias" },
+    { nombre: "editar_categorias", descripcion: "Permiso para editar categorias" },
+
+    // unidades de medida
+    { nombre: "ver_unidades_medida", descripcion: "Permiso para ver las unidades de medida" },
+    { nombre: "crear_unidades_medida", descripcion: "Permiso para crear unidades de medida" },
+    { nombre: "editar_unidades_medida", descripcion: "Permiso para editar unidades de medida" },
+
+    // monedas
+    { nombre: "ver_monedas", descripcion: "Permiso para ver las monedas" },
+    { nombre: "crear_monedas", descripcion: "Permiso para crear monedas" },
+    { nombre: "editar_monedas", descripcion: "Permiso para editar monedas" },
+
+    // impuestos
+    { nombre: "ver_impuestos", descripcion: "Permiso para ver los impuestos" },
+    { nombre: "crear_impuestos", descripcion: "Permiso para crear impuestos" },
+    { nombre: "editar_impuestos", descripcion: "Permiso para editar impuestos" },
+
     // Perfil
     { nombre: "ver_profile", descripcion: "Permiso para ver el perfil" },
 
@@ -99,30 +120,30 @@ async function main() {
   console.log("Permisos asignados a Administrador");
 
   // 5. Crear Puesto
-  let puesto = await prisma.puesto.findFirst({ where: { Nombre: "Gerente Recursos Humanos" } });
+  let puesto = await prisma.puesto.findFirst({ where: { nombre: "Gerente Recursos Humanos" } });
   if (!puesto) {
     puesto = await prisma.puesto.create({
       data: {
-        Id: randomUUID(),
-        Nombre: "Gerente Recursos Humanos",
-        Descripcion: "Gerente de recursos humanos",
-        Activo: true,
+        id: randomUUID(),
+        nombre: "Gerente Recursos Humanos",
+        descripcion: "Gerente de recursos humanos",
+        activo: true,
       },
     });
     console.log("Puesto creado");
   }
 
   // 6. Crear Empleado
-  let empleado = await prisma.empleados.findFirst({ where: { correo: "erickjosepineda33@gmail.com" } });
+  let empleado = await prisma.empleado.findFirst({ where: { correo: "erickjosepineda33@gmail.com" } });
   if (!empleado) {
-    empleado = await prisma.empleados.create({
+    empleado = await prisma.empleado.create({
       data: {
         id: randomUUID(),
         nombre: "Erick Jose",
         apellido: "Reyes Pineda",
-        puesto_id: puesto.Id,
+        puesto_id: puesto.id,
         correo: "erickjosepineda33@gmail.com",
-        FechaNacimiento: new Date(1999, 12, 2),
+        fechaNacimiento: new Date(1999, 12, 2),
         fechaIngreso: new Date(2023, 0, 1),
         telefono: "9999-9999",
         numeroIdentificacion: "0801-1999-00001",
@@ -145,7 +166,7 @@ async function main() {
         empleado_id: empleado.id,
         rol_id: adminRole.id,
         activo: true,
-        DebeCambiarPassword: false,
+        debeCambiarPwd: false,
       },
     });
     console.log("Usuario Erick Reyes creado");

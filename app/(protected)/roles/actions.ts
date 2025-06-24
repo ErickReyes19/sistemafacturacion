@@ -20,7 +20,7 @@ export async function getRolesPermisos(): Promise<RolDTO[]> {
     return roles.map((r) => ({
       id: r.id,
       nombre: r.nombre,
-      descripcion: r.descripcion,
+      descripcion: r.descripcion ?? "",
       activo: r.activo,
       permisos: r.permisos.map((rp): PermisosRol => ({
         id: rp.permiso.id,
@@ -49,7 +49,7 @@ export async function getRolesPermisosActivos(): Promise<RolDTO[]> {
     return roles.map((r) => ({
       id: r.id,
       nombre: r.nombre,
-      descripcion: r.descripcion,
+      descripcion: r.descripcion ?? "",
       activo: r.activo,
       permisos: r.permisos.map((rp): PermisosRol => ({
         id: rp.permiso.id,
@@ -95,7 +95,7 @@ export async function putRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
     return {
       id: updated.id,
       nombre: updated.nombre,
-      descripcion: updated.descripcion,
+      descripcion: updated.descripcion ?? "",
       activo: updated.activo,
       permisos: updated.permisos.map((rp) => ({
         id: rp.permiso.id,
@@ -130,7 +130,7 @@ export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
     return {
       id: rol.id,
       nombre: rol.nombre,
-      descripcion: rol.descripcion,
+      descripcion: rol.descripcion ?? "",
       activo: rol.activo,
       permisos: rol.permisos.map((rp): PermisosRol => ({
         id: rp.permiso.id,
@@ -157,7 +157,7 @@ export async function postRol({ rol }: { rol: RolDTO; }): Promise<RolDTO> {
     return {
       id: existente.id,
       nombre: existente.nombre,
-      descripcion: existente.descripcion,
+      descripcion: existente.descripcion ?? "",
       activo: existente.activo,
       permisos: existente.permisos.map(rp => ({
         id: rp.permiso.id,
@@ -189,7 +189,7 @@ export async function postRol({ rol }: { rol: RolDTO; }): Promise<RolDTO> {
     return {
       id: created.id,
       nombre: created.nombre,
-      descripcion: created.descripcion,
+      descripcion: created.descripcion ?? "",
       activo: created.activo,
       permisos: created.permisos.map(rp => ({
         id: rp.permiso.id,

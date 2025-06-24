@@ -14,7 +14,7 @@ export async function getUsuarios(): Promise<Usuario[]> {
   const records = await prisma.usuarios.findMany({
     include: {
       rol: { select: { id: true, nombre: true } },
-      Empleados: { select: { id: true, nombre: true, apellido: true } },
+      empleado: { select: { id: true, nombre: true, apellido: true } },
     },
   });
   return records.map((r) => ({
@@ -22,8 +22,8 @@ export async function getUsuarios(): Promise<Usuario[]> {
     usuario: r.usuario,
     rol: r.rol?.nombre ?? "",
     rol_id: r.rol_id,
-    empleado: r.Empleados
-      ? `${r.Empleados.nombre} ${r.Empleados.apellido}`
+    empleado: r.empleado
+      ? `${r.empleado.nombre} ${r.empleado.apellido}`
       : "",
     empleado_id: r.empleado_id,
     activo: r.activo,
@@ -34,7 +34,6 @@ export async function getUsuarios(): Promise<Usuario[]> {
  * Crear un nuevo usuario y enviar correo con contraseña temporal
  */
 export async function createUsuario(data: UsuarioCreate): Promise<Usuario> {
-  console.log("🚀 ~ createUsuario ~ data:", data)
   // 1️⃣ Generar contraseña aleatoria de 12 caracteres
   const tempPassword = randomBytes(9).toString("base64").slice(0, 12);
 
@@ -50,12 +49,12 @@ export async function createUsuario(data: UsuarioCreate): Promise<Usuario> {
       empleado_id: data.empleado_id,
       contrasena: hashed,
       activo: true,
-      DebeCambiarPassword: true,
+      debeCambiarPwd: true,
     },
   });
 
   // 4️⃣ Obtener datos del empleado asociado
-  const empleado = await prisma.empleados.findUnique({
+  const empleado = await prisma.empleado.findUnique({
     where: { id: data.empleado_id },
     select: { correo: true, nombre: true, apellido: true },
   });
@@ -110,7 +109,7 @@ export async function updateUsuario(p0: string, data: UsuarioUpdate): Promise<Us
       activo: data.activo,
     },
     include: {
-      Empleados: { select: { nombre: true, apellido: true } },
+      empleado: { select: { nombre: true, apellido: true } },
     },
   });
   return {
@@ -118,8 +117,8 @@ export async function updateUsuario(p0: string, data: UsuarioUpdate): Promise<Us
     usuario: updated.usuario,
     rol: "",
     rol_id: updated.rol_id,
-    empleado: updated.Empleados
-      ? `${updated.Empleados.nombre} ${updated.Empleados.apellido}`
+    empleado: updated.empleado
+      ? `${updated.empleado.nombre} ${updated.empleado.apellido}`
       : "",
     empleado_id: updated.empleado_id,
     activo: updated.activo,
@@ -134,7 +133,7 @@ export async function getUsuarioById(id: string): Promise<Usuario | null> {
     where: { id },
     include: {
       rol: { select: { nombre: true } },
-      Empleados: { select: { nombre: true, apellido: true } },
+      empleado: { select: { nombre: true, apellido: true } },
     },
   });
   if (!r) return null;
@@ -143,8 +142,8 @@ export async function getUsuarioById(id: string): Promise<Usuario | null> {
     usuario: r.usuario,
     rol: r.rol?.nombre ?? "",
     rol_id: r.rol_id,
-    empleado: r.Empleados
-      ? `${r.Empleados.nombre} ${r.Empleados.apellido}`
+    empleado: r.empleado
+      ? `${r.empleado.nombre} ${r.empleado.apellido}`
       : "",
     empleado_id: r.empleado_id,
     activo: r.activo,

@@ -8,10 +8,10 @@ import { Empleado } from "./type"; // Asegúrate de que `EmployeeImportDto` cont
  * Obtiene todos los empleados con datos de puesto y jefe
  */
 export async function getEmpleados(): Promise<Empleado[]> {
-  const records = await prisma.empleados.findMany({
+  const records = await prisma.empleado.findMany({
     include: {
-      Usuarios: true,
-      Puesto: true
+      usuarios: true,
+      puesto: true
     },
   });
 
@@ -20,14 +20,14 @@ export async function getEmpleados(): Promise<Empleado[]> {
     nombre: r.nombre,
     apellido: r.apellido,
     correo: r.correo,
-    fechaNacimiento: r.FechaNacimiento ?? new Date(0),
+    fechaNacimiento: r.fechaNacimiento ?? new Date(0),
     fechaIngreso: r.fechaIngreso ?? new Date(0),
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
     genero: r.genero ?? "",
     activo: r.activo,
-    usuario: r.Usuarios?.usuario ?? "Sin Usuario",
-    puesto_id: r.puesto_id,puesto: r.Puesto.Nombre,
+    usuario: r.usuarios?.usuario ?? "Sin Usuario",
+    puesto_id: r.puesto_id,puesto: r.puesto.nombre,
   }));
 }
 
@@ -35,16 +35,16 @@ export async function getEmpleados(): Promise<Empleado[]> {
  * Empleados sin usuario asignado
  */
 export async function getEmpleadosSinUsuario(): Promise<Empleado[]> {
-  const records = await prisma.empleados.findMany({
-    where: { Usuarios: null },
-    include: { Puesto: true },
+  const records = await prisma.empleado.findMany({
+    where: { usuarios: null },
+    include: { puesto: true },
   });
   return records.map((r) => ({
     id: r.id,
     nombre: r.nombre,
     apellido: r.apellido,
     correo: r.correo,
-    fechaNacimiento: r.FechaNacimiento ?? new Date(0),
+    fechaNacimiento: r.fechaNacimiento ?? new Date(0),
     fechaIngreso: r.fechaIngreso ?? new Date(0),
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
@@ -52,7 +52,7 @@ export async function getEmpleadosSinUsuario(): Promise<Empleado[]> {
     activo: r.activo,
     usuario: null,
     puesto_id: r.puesto_id,
-    puesto: r.Puesto.Nombre,
+    puesto: r.puesto.nombre,
   }));
 }
 
@@ -60,11 +60,11 @@ export async function getEmpleadosSinUsuario(): Promise<Empleado[]> {
  * Obtener un empleado por ID
  */
 export async function getEmpleadoById(id: string): Promise<Empleado | null> {
-  const r = await prisma.empleados.findUnique({
+  const r = await prisma.empleado.findUnique({
     where: { id },
     include: {
-      Puesto: true,
-      Usuarios: true,
+      puesto: true,
+      usuarios: true,
     },
   });
   if (!r) return null;
@@ -73,14 +73,14 @@ export async function getEmpleadoById(id: string): Promise<Empleado | null> {
     nombre: r.nombre,
     apellido: r.apellido,
     correo: r.correo,
-    fechaNacimiento: r.FechaNacimiento ?? new Date(0),
+    fechaNacimiento: r.fechaNacimiento ?? new Date(0),
     fechaIngreso: r.fechaIngreso ?? new Date(0),
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
     genero: r.genero ?? "",
     activo: r.activo,
-    usuario: r.Usuarios?.usuario ?? null,
-    puesto_id: r.puesto_id,puesto: r.Puesto.Nombre,
+    usuario: r.usuarios?.usuario ?? null,
+    puesto_id: r.puesto_id,puesto: r.puesto.nombre,
   };
 }
 
@@ -89,13 +89,13 @@ export async function getEmpleadoById(id: string): Promise<Empleado | null> {
  */
 export async function createEmpleado(data: Empleado): Promise<Empleado> {
   const id = randomUUID();
-  const r = await prisma.empleados.create({
+  const r = await prisma.empleado.create({
     data: {
       id,
       nombre: data.nombre,
       apellido: data.apellido,
       correo: data.correo,
-      FechaNacimiento: data.fechaNacimiento,
+      fechaNacimiento: data.fechaNacimiento,
       fechaIngreso: data.fechaIngreso,
       numeroIdentificacion: data.numeroIdentificacion,
       telefono: data.telefono,
@@ -114,13 +114,13 @@ export async function updateEmpleado(
   id: string,
   data: Partial<Empleado>
 ): Promise<Empleado | null> {
-  const r = await prisma.empleados.update({
+  const r = await prisma.empleado.update({
     where: { id },
     data: {
       nombre: data.nombre,
       apellido: data.apellido,
       correo: data.correo,
-      FechaNacimiento: data.fechaNacimiento,
+      fechaNacimiento: data.fechaNacimiento,
       fechaIngreso: data.fechaIngreso,
       numeroIdentificacion: data.numeroIdentificacion,
       telefono: data.telefono,

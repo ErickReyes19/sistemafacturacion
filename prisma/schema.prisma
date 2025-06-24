@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
@@ -15,118 +9,600 @@ datasource db {
 }
 
 
-model Empleados {
-  id        String @id @default(uuid()) @db.VarChar(36)
-  puesto_id String @db.VarChar(36)
 
-  numeroIdentificacion String    @db.VarChar(50)
-  nombre               String    @db.VarChar(100)
-  apellido             String    @db.VarChar(100)
-  correo               String    @db.LongText
-  FechaNacimiento      DateTime? @db.DateTime(6)
-  fechaIngreso         DateTime? @db.DateTime(6)
-  telefono             String?   @db.VarChar(20)
-
-  genero   String?  @db.VarChar(20)
-  activo   Boolean  @db.Bit(1)
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-
-  Puesto     Puesto       @relation(fields: [puesto_id], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Empleados_Puesto_puesto_id")
-  Usuarios   Usuarios?
-
-  @@index([puesto_id], map: "IX_Empleados_puesto_id")
+enum Estado {
+  activo
+  inactivo
 }
 
-model Puesto {
-  Id          String   @id @db.VarChar(36)
-  Nombre      String   @db.VarChar(100)
-  Descripcion String   @db.VarChar(100)
-  Activo      Boolean  @db.Bit(1)
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
+enum TipoDocumento {
+  factura
+  boleta
+  ticket
+}
 
-  Empleados Empleados[]
+enum MovimientoTipo {
+  ingreso
+  egreso
+  ajuste
+}
+
+enum PagoMetodo {
+  efectivo
+  tarjeta
+  transferencia
+  otro
+}
+
+enum PromocionTipo {
+  porcentaje
+  monto_fijo
+}
+
+enum CxCEstado {
+  abierto
+  cerrado
+}
+
+
+
+model Rol {
+  id             String       @id @default(uuid())
+  nombre         String       @unique
+  descripcion    String?
+  activo         Boolean      @default(true)
+  creado_at      DateTime     @default(now())
+  actualizado_at DateTime     @updatedAt
+  permisos       RolPermiso[]
+  usuarios       Usuarios[]
 }
 
 model Permiso {
-  id          String   @id @default(uuid())
-  nombre      String   @unique
-  descripcion String
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
-  activo      Boolean
-
-  roles RolPermiso[]
+  id             String       @id @default(uuid())
+  nombre         String       @unique
+  descripcion    String?
+  activo         Boolean      @default(true)
+  creado_at      DateTime     @default(now())
+  actualizado_at DateTime     @updatedAt
+  roles          RolPermiso[]
 }
 
 model RolPermiso {
-  id        String   @id @default(uuid())
   rolId     String
   permisoId String
-  createAt  DateTime @default(now())
+  creado_at DateTime @default(now())
 
-  permiso Permiso @relation(fields: [permisoId], references: [id])
-  rol     Rol     @relation(fields: [rolId], references: [id])
+  rol     Rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+  permiso Permiso @relation(fields: [permisoId], references: [id], onDelete: Cascade)
 
-  @@unique([rolId, permisoId])
-  @@index([permisoId], map: "RolPermiso_permisoId_fkey")
+  @@id([rolId, permisoId])
 }
 
-model Rol {
-  id          String   @id @default(uuid())
-  nombre      String   @unique
-  descripcion String
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
-  activo      Boolean
+model Empleado {
+  id                   String    @id @default(uuid())
+  puesto_id            String
+  numeroIdentificacion String
+  nombre               String
+  apellido             String
+  correo               String    @db.LongText
+  fechaNacimiento      DateTime?
+  fechaIngreso         DateTime?
+  telefono             String?
+  genero               String?
+  activo               Boolean   @default(true)
+  creado_at            DateTime  @default(now())
+  actualizado_at       DateTime  @updatedAt
 
-  permisos RolPermiso[]
-  usuarios Usuarios[]
+  puesto          Puesto               @relation(fields: [puesto_id], references: [id], onDelete: Cascade)
+  usuarios        Usuarios?
+  inventarios     EmpleadoInventario[]
+  facturas        Factura[]            @relation("EmpleadoFacturas")
+  ordenes         OrdenCompra[]        @relation("EmpleadoOC")
+  movimientosCaja MovimientoCaja[]
+  auditoria       Auditoria?
+  asientos        AsientoContable[]
+  AperturaCaja    AperturaCaja[]
+
+  @@index([puesto_id])
+}
+
+model Puesto {
+  id             String   @id @default(uuid())
+  nombre         String
+  descripcion    String?
+  activo         Boolean  @default(true)
+  creado_at      DateTime @default(now())
+  actualizado_at DateTime @updatedAt
+
+  empleados Empleado[]
 }
 
 model Usuarios {
-  id                  String   @id @db.VarChar(36)
-  empleado_id         String   @unique(map: "IX_Usuarios_empleado_id") @db.VarChar(36)
-  usuario             String   @db.VarChar(50)
-  contrasena          String   @db.LongText
-  DebeCambiarPassword Boolean?
-  createAt            DateTime @default(now())
-  updateAt            DateTime @updatedAt
-  rol_id              String   @db.VarChar(36)
-  activo              Boolean  @db.Bit(1)
+  id             String   @id @default(uuid())
+  empleado_id    String   @unique
+  usuario        String
+  contrasena     String   @db.LongText
+  debeCambiarPwd Boolean?
+  rol_id         String
+  activo         Boolean  @default(true)
+  creado_at      DateTime @default(now())
+  actualizado_at DateTime @updatedAt
 
-  Empleados          Empleados            @relation(fields: [empleado_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Usuarios_Empleados_empleado_id")
-  rol                Rol                  @relation(fields: [rol_id], references: [id])
-  PasswordResetToken PasswordResetToken[]
-
-  @@index([rol_id], map: "IX_Usuarios_rol_id")
+  empleado Empleado             @relation(fields: [empleado_id], references: [id], onDelete: Cascade)
+  rol      Rol                  @relation(fields: [rol_id], references: [id])
+  tokens   PasswordResetToken[]
 }
 
 model PasswordResetToken {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  userId    String   @db.VarChar(36)
-  token     String   @unique @db.VarChar(128)
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  Usuario Usuarios @relation(fields: [userId], references: [id], onDelete: Cascade)
+  usuario Usuarios @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  @@index([userId], map: "IX_PasswordResetToken_userId")
+model Sucursal {
+  id        String   @id @default(uuid())
+  nombre    String   @unique
+  direccion String?
+  telefono  String?
+  activo    Boolean  @default(true)
+  creado_at DateTime @default(now())
+
+  almacenes       Almacen[]
+  configuraciones Configuracion[]
+}
+
+model Almacen {
+  id         String   @id @default(uuid())
+  nombre     String   @unique
+  ubicacion  String?
+  activo     Boolean  @default(true)
+  creado_at  DateTime @default(now())
+  sucursalId String?
+
+  sucursal    Sucursal?    @relation(fields: [sucursalId], references: [id])
+  inventarios Inventario[]
+}
+
+model Categoria {
+  id             String   @id @default(uuid())
+  nombre         String   @unique
+  descripcion    String?
+  activo         Boolean  @default(true)
+  creado_at      DateTime @default(now())
+  actualizado_at DateTime @updatedAt
+
+  productos Producto[]
+}
+
+model Moneda {
+  id        String   @id @default(uuid())
+  codigo    String   @unique @db.Char(3)
+  nombre    String
+  simbolo   String?
+  activo    Boolean  @default(true)
+  creado_at DateTime @default(now())
+
+  productos Producto[]
+  facturas  Factura[]
+  ordenes   OrdenCompra[]
+}
+
+model Impuesto {
+  id         String   @id @default(uuid())
+  nombre     String   @unique
+  porcentaje Float
+  activo     Boolean  @default(true)
+  creado_at  DateTime @default(now())
+
+  productos       Producto[]
+  detalleFacturas DetalleFactura[]
+}
+
+model Proveedor {
+  id             String   @id @default(uuid())
+  nombre         String
+  contacto       String?
+  telefono       String?
+  email          String?
+  direccion      String?
+  creado_at      DateTime @default(now())
+  actualizado_at DateTime @updatedAt
+
+  ordenes OrdenCompra[]
+}
+
+model UnidadMedida {
+  id          String   @id @default(uuid())
+  nombre      String   @unique
+  descripcion String?
+  creado_at   DateTime @default(now())
+  activo      Boolean  @default(true)
+
+  productosBase    Producto[]                @relation("BaseUnidad")
+  productoUnidades ProductoUnidad[]
+  detalleFacturas  DetalleFactura[]
+  detalleOC        DetalleOrdenCompra[]
+  detalleDV        DetalleDevolucionVenta[]
+  detalleDC        DetalleDevolucionCompra[]
+}
+
+model Producto {
+  id               String   @id @default(uuid())
+  sku              String   @unique
+  nombre           String
+  descripcion      String?
+  precio_compra    Float
+  precio_venta     Float
+  unidad_medida_id String
+  categoria_id     String
+  moneda_id        String
+  impuesto_id      String?
+  activo           Boolean  @default(true)
+  creado_at        DateTime @default(now())
+  actualizado_at   DateTime @updatedAt
+
+  unidadBase        UnidadMedida              @relation("BaseUnidad", fields: [unidad_medida_id], references: [id])
+  categoria         Categoria                 @relation(fields: [categoria_id], references: [id])
+  moneda            Moneda                    @relation(fields: [moneda_id], references: [id])
+  impuesto          Impuesto?                 @relation(fields: [impuesto_id], references: [id])
+  unidades          ProductoUnidad[]
+  inventarios       Inventario[]
+  detalleFacturas   DetalleFactura[]
+  detalleOC         DetalleOrdenCompra[]
+  detalleDV         DetalleDevolucionVenta[]
+  detalleDC         DetalleDevolucionCompra[]
+  productoPromocion ProductoPromocion[]
+}
+
+model ProductoUnidad {
+  id               String   @id @default(uuid())
+  producto_id      String
+  unidad_medida_id String
+  factor           Float
+  activo           Boolean      @default(true)
+  producto         Producto     @relation(fields: [producto_id], references: [id], onDelete: Cascade)
+  unidadMedida     UnidadMedida @relation(fields: [unidad_medida_id], references: [id])
+
+  @@unique([producto_id, unidad_medida_id])
+}
+
+model Inventario {
+  id             String   @id @default(uuid())
+  producto_id    String
+  almacen_id     String
+  cantidad       Int
+  minimo_stock   Int
+  actualizado_at DateTime @updatedAt
+
+  producto    Producto               @relation(fields: [producto_id], references: [id])
+  almacen     Almacen                @relation(fields: [almacen_id], references: [id])
+  movimientos MovimientoInventario[]
+  empleados   EmpleadoInventario[]
+}
+
+model MovimientoInventario {
+  id            String   @id @default(uuid())
+  inventario_id String
+  tipo          MovimientoTipo
+  cantidad      Int
+  fecha         DateTime       @default(now())
+  referencia    String?
+  descripcion   String?
+
+  inventario Inventario @relation(fields: [inventario_id], references: [id])
 }
 
 model Cliente {
   id                   String    @id @default(uuid())
-  nombre               String    @db.VarChar(100)
-  apellido             String    @db.VarChar(100)
-  correo               String?   @unique @db.VarChar(150)
-  telefono             String?   @db.VarChar(20)
+  nombre               String
+  apellido             String?
+  correo               String?   @unique
+  telefono             String?
   fechaNacimiento      DateTime?
-  genero               String?   @db.VarChar(20)
-  numeroIdentificacion String?   @db.VarChar(50)
-  direccion            String?   @db.VarChar(255)
+  genero               String?
+  numeroIdentificacion String?
+  direccion            String?
   activo               Boolean   @default(true)
-  createAt             DateTime  @default(now())
-  updateAt             DateTime  @updatedAt
+  creado_at            DateTime  @default(now())
+  actualizado_at       DateTime  @updatedAt
 
+  facturas         Factura[]
+  cuentasPorCobrar CuentaPorCobrar[]
+}
+
+model SeriesDocumento {
+  id             String   @id @default(uuid())
+  tipo_documento TipoDocumento
+  serie          String
+  ultimo_numero  Int           @default(0)
+  descripcion    String?
+
+  facturas Factura[]
+
+  @@unique([tipo_documento, serie])
+}
+
+model Factura {
+  id                 String   @id @default(uuid())
+  serie_documento_id String
+  numero             Int
+  cliente_id         String
+  empleado_id        String
+  fecha_emision      DateTime       @default(now())
+  fecha_vencimiento  DateTime?
+  estado             TipoDocumento?
+  subtotal           Float
+  total_impuestos    Float
+  total              Float
+  moneda_id          String
+
+  serieDocumento   SeriesDocumento  @relation(fields: [serie_documento_id], references: [id])
+  cliente          Cliente          @relation(fields: [cliente_id], references: [id])
+  empleado         Empleado         @relation("EmpleadoFacturas", fields: [empleado_id], references: [id])
+  moneda           Moneda           @relation(fields: [moneda_id], references: [id])
+  detalle          DetalleFactura[]
+  pagos            Pago[]
+  cuentasPorCobrar CuentaPorCobrar?
+
+  DevolucionVenta DevolucionVenta[]
+}
+
+model DetalleFactura {
+  id                  String   @id @default(uuid())
+  factura_id          String
+  producto_id         String
+  unidad_medida_id    String
+  cantidad            Int
+  precio_unitario     Float
+  descuento           Float
+  subtotal            Float
+  impuesto_id         String?
+  porcentaje_impuesto Float
+
+  factura      Factura      @relation(fields: [factura_id], references: [id])
+  producto     Producto     @relation(fields: [producto_id], references: [id])
+  unidadMedida UnidadMedida @relation(fields: [unidad_medida_id], references: [id])
+  impuesto     Impuesto?    @relation(fields: [impuesto_id], references: [id])
+}
+
+model Pago {
+  id          String   @id @default(uuid())
+  factura_id  String
+  fecha_pago  DateTime   @default(now())
+  metodo_pago PagoMetodo
+  monto       Float
+  referencia  String?
+
+  factura Factura @relation(fields: [factura_id], references: [id])
+}
+
+model OrdenCompra {
+  id           String   @id @default(uuid())
+  proveedor_id String
+  empleado_id  String
+  fecha_orden  DateTime      @default(now())
+  estado       TipoDocumento
+  total        Float
+  moneda_id    String
+
+  proveedor Proveedor            @relation(fields: [proveedor_id], references: [id])
+  empleado  Empleado             @relation("EmpleadoOC", fields: [empleado_id], references: [id])
+  moneda    Moneda               @relation(fields: [moneda_id], references: [id])
+  detalle   DetalleOrdenCompra[]
+
+  DevolucionCompra DevolucionCompra[]
+}
+
+model DetalleOrdenCompra {
+  id               String   @id @default(uuid())
+  orden_compra_id  String
+  producto_id      String
+  unidad_medida_id String
+  cantidad         Int
+  precio_unitario  Float
+  subtotal         Float
+
+  ordenCompra  OrdenCompra  @relation(fields: [orden_compra_id], references: [id])
+  producto     Producto     @relation(fields: [producto_id], references: [id])
+  unidadMedida UnidadMedida @relation(fields: [unidad_medida_id], references: [id])
+}
+
+model DevolucionVenta {
+  id         String   @id @default(uuid())
+  factura_id String
+  fecha      DateTime @default(now())
+  motivo     String?
+
+  factura Factura                  @relation(fields: [factura_id], references: [id])
+  detalle DetalleDevolucionVenta[]
+}
+
+model DetalleDevolucionVenta {
+  id               String   @id @default(uuid())
+  devolucion_id    String
+  producto_id      String
+  unidad_medida_id String
+  cantidad         Int
+  precio_unitario  Float
+  subtotal         Float
+
+  devolucion   DevolucionVenta @relation(fields: [devolucion_id], references: [id])
+  producto     Producto        @relation(fields: [producto_id], references: [id])
+  unidadMedida UnidadMedida    @relation(fields: [unidad_medida_id], references: [id])
+}
+
+model DevolucionCompra {
+  id              String   @id @default(uuid())
+  orden_compra_id String
+  fecha           DateTime @default(now())
+  motivo          String?
+
+  ordenCompra OrdenCompra               @relation(fields: [orden_compra_id], references: [id])
+  detalle     DetalleDevolucionCompra[]
+}
+
+model DetalleDevolucionCompra {
+  id               String   @id @default(uuid())
+  devolucion_id    String
+  producto_id      String
+  unidad_medida_id String
+  cantidad         Int
+  precio_unitario  Float
+  subtotal         Float
+
+  devolucion   DevolucionCompra @relation(fields: [devolucion_id], references: [id])
+  producto     Producto         @relation(fields: [producto_id], references: [id])
+  unidadMedida UnidadMedida     @relation(fields: [unidad_medida_id], references: [id])
+}
+
+model Caja {
+  id        String   @id @default(uuid())
+  nombre    String  @unique
+  ubicacion String?
+
+  activo    Boolean  @default(true)
+  creado_at DateTime @default(now())
+
+  aperturas AperturaCaja[]
+}
+
+model AperturaCaja {
+  id             String   @id @default(uuid())
+  caja_id        String
+  empleado_id    String
+  fecha_apertura DateTime @default(now())
+  monto_inicial  Float
+
+  caja        Caja             @relation(fields: [caja_id], references: [id])
+  empleado    Empleado         @relation(fields: [empleado_id], references: [id])
+  movimientos MovimientoCaja[]
+  cierre      CierreCaja?
+}
+
+model MovimientoCaja {
+  id               String   @id @default(uuid())
+  apertura_id      String
+  tipo             MovimientoTipo
+  fecha_movimiento DateTime       @default(now())
+  monto            Float
+  descripcion      String?
+  empleado_id      String?
+
+  apertura AperturaCaja @relation(fields: [apertura_id], references: [id], onDelete: Cascade)
+  empleado Empleado?    @relation(fields: [empleado_id], references: [id])
+}
+
+model CierreCaja {
+  id                String   @id @default(uuid())
+  apertura_id       String   @unique
+  fecha_cierre      DateTime @default(now())
+  monto_final       Float
+  total_ventas      Float
+  total_movimientos Float
+  diferencia        Float
+
+  apertura AperturaCaja @relation(fields: [apertura_id], references: [id], onDelete: Cascade)
+}
+
+model Auditoria {
+  id               String   @id @default(uuid())
+  tabla_nombre     String
+  registro_id      String
+  accion           String
+  datos_anteriores Json?
+  datos_nuevos     Json?
+  usuario_id       String?  @unique
+  fecha_accion     DateTime @default(now())
+
+  usuario Empleado? @relation(fields: [usuario_id], references: [id])
+}
+
+model Promocion {
+  id           String   @id @default(uuid())
+  nombre       String
+  tipo         PromocionTipo
+  valor        Float
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  activo       Boolean       @default(true)
+  creado_at    DateTime      @default(now())
+
+  productos ProductoPromocion[]
+}
+
+model ProductoPromocion {
+  promocion_id String
+  producto_id  String
+
+  promocion Promocion @relation(fields: [promocion_id], references: [id], onDelete: Cascade)
+  producto  Producto  @relation(fields: [producto_id], references: [id])
+
+  @@id([promocion_id, producto_id])
+}
+
+model CuentaPorCobrar {
+  id           String   @id @default(uuid())
+  cliente_id   String
+  factura_id   String   @unique
+  monto_total  Float
+  monto_pagado Float     @default(0)
+  saldo        Float
+  estado       CxCEstado @default(abierto)
+  creado_at    DateTime  @default(now())
+
+  cliente Cliente @relation(fields: [cliente_id], references: [id])
+  factura Factura @relation(fields: [factura_id], references: [id])
+}
+
+model EmpleadoInventario {
+  id               String   @id @default(uuid())
+  empleado_id      String
+  inventario_id    String
+  fecha_asignacion DateTime @default(now())
+  activo           Boolean  @default(true)
+
+  empleado   Empleado   @relation(fields: [empleado_id], references: [id], onDelete: Cascade)
+  inventario Inventario @relation(fields: [inventario_id], references: [id], onDelete: Cascade)
+
+  @@unique([empleado_id, inventario_id])
+}
+
+model AsientoContable {
+  id             String   @id @default(uuid())
+  fecha          DateTime
+  descripcion    String?
+  empleado_id    String
+  tipo_documento String? // "factura", "orden_compra", "pago", etc.
+  documento_id   String? // ID del documento relacionado
+  creado_at      DateTime @default(now())
+
+  empleado Empleado                 @relation(fields: [empleado_id], references: [id])
+  detalles DetalleAsientoContable[]
+}
+
+model DetalleAsientoContable {
+  id              String   @id @default(uuid())
+  asiento_id      String
+  cuenta_contable String
+  debe            Float
+  haber           Float
+  descripcion     String?
+
+  asiento AsientoContable @relation(fields: [asiento_id], references: [id], onDelete: Cascade)
+}
+
+model Configuracion {
+  clave          String   @id
+  valor          String
+  descripcion    String?
+  sucursal_id    String? // Opcional: para configuraciones específicas por sucursal
+  activo         Boolean  @default(true)
+  creado_at      DateTime @default(now())
+  actualizado_at DateTime @updatedAt
+
+  sucursal Sucursal? @relation(fields: [sucursal_id], references: [id])
 }

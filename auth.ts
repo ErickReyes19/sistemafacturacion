@@ -156,9 +156,9 @@ const usuarioWithRolArgs = Prisma.validator<Prisma.UsuariosDefaultArgs>()({
                 },
             },
         },
-        Empleados: {
+        empleado: {
             include: {
-                Puesto: true, // Incluimos el puesto del empleado
+                puesto: true, // Incluimos el puesto del empleado
             },
         },
 
@@ -188,9 +188,9 @@ export async function getADAuthentication(
                         },
                     },
                 },
-                Empleados: {
+                empleado: {
                     include: {
-                        Puesto: true,
+                        puesto: true,
                     },
                 },
             },
@@ -212,9 +212,9 @@ export async function getADAuthentication(
             IdRol: user.rol_id,
             IdEmpleado: user.empleado_id,
             Permiso: permisos,
-            DebeCambiar: user.DebeCambiarPassword!,
-            Puesto: user.Empleados?.Puesto?.Nombre ?? "",
-            PuestoId: user.Empleados?.puesto_id ?? "",
+            DebeCambiar: user.debeCambiarPwd!,
+            Puesto: user.empleado?.puesto?.nombre ?? "",
+            PuestoId: user.empleado?.puesto_id ?? "",
             exp: Math.floor(Date.now() / 1000) + 3600,
             iss: "your-issuer",
             aud: "your-audience",
@@ -250,8 +250,8 @@ export async function changePassword(
                         permisos: { include: { permiso: true } },
                     },
                 },
-                Empleados: {
-                    include: { Puesto: true },
+                empleado: {
+                    include: { puesto: true },
                 },
             },
         });
@@ -268,7 +268,7 @@ export async function changePassword(
             where: { id: existing.id },
             data: {
                 contrasena: hashedPassword,
-                DebeCambiarPassword: false,
+                debeCambiarPwd: false,
             },
             include: {
                 rol: {
@@ -276,8 +276,8 @@ export async function changePassword(
                         permisos: { include: { permiso: true } },
                     },
                 },
-                Empleados: {
-                    include: { Puesto: true },
+                empleado: {
+                    include: { puesto: true },
                 },
             },
         });
@@ -293,9 +293,9 @@ export async function changePassword(
             IdRol: updated.rol_id,
             IdEmpleado: updated.empleado_id,
             Permiso: permisos,
-            DebeCambiar: updated.DebeCambiarPassword!,
-            Puesto: updated.Empleados?.Puesto?.Nombre ?? "",
-            PuestoId: updated.Empleados?.puesto_id ?? "",
+            DebeCambiar: updated.debeCambiarPwd!,
+            Puesto: updated.empleado?.puesto?.nombre ?? "",
+            PuestoId: updated.empleado?.puesto_id ?? "",
             exp: Math.floor(Date.now() / 1000) + 3600,
             iss: "your-issuer",
             aud: "your-audience",

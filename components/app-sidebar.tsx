@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { ChevronDown, ChevronUp, LayersIcon, ListCheck, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -66,13 +66,26 @@ const items = [
     icon: Users,
     permiso: "ver_clientes",
   },
-
   {
-    title: "Servicios",
-    url: "/servicios",
-    icon: ListCheck,
-    permiso: "ver_servicios",
+    title: "Monedas",
+    url: "/monedas",
+    icon: CoinsIcon,
+    permiso: "ver_monedas",
   },
+  {
+    title: "Impuestos",
+    url: "/impuestos",
+    icon: PercentIcon,
+    permiso: "ver_impuestos",
+  },
+  {
+    title: "Categorias",
+    url: "/categorias",
+    icon: LayersIcon,
+    permiso: "ver_categorias",
+  },
+
+
 
 ];
 
