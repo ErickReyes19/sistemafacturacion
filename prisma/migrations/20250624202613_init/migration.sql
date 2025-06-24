@@ -37,6 +37,7 @@ CREATE TABLE `RolPermiso` (
 CREATE TABLE `Empleado` (
     `id` VARCHAR(191) NOT NULL,
     `puesto_id` VARCHAR(191) NOT NULL,
+    `sucursal_id` VARCHAR(191) NOT NULL DEFAULT 'ID_DE_TU_SUCURSAL',
     `numeroIdentificacion` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `apellido` VARCHAR(191) NOT NULL,
@@ -108,7 +109,7 @@ CREATE TABLE `Sucursal` (
 
 -- CreateTable
 CREATE TABLE `Almacen` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `ubicacion` VARCHAR(191) NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
@@ -121,7 +122,7 @@ CREATE TABLE `Almacen` (
 
 -- CreateTable
 CREATE TABLE `Categoria` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `descripcion` VARCHAR(191) NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
@@ -134,7 +135,7 @@ CREATE TABLE `Categoria` (
 
 -- CreateTable
 CREATE TABLE `Moneda` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `codigo` CHAR(3) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `simbolo` VARCHAR(191) NULL,
@@ -147,7 +148,7 @@ CREATE TABLE `Moneda` (
 
 -- CreateTable
 CREATE TABLE `Impuesto` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `porcentaje` DOUBLE NOT NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
@@ -159,7 +160,7 @@ CREATE TABLE `Impuesto` (
 
 -- CreateTable
 CREATE TABLE `Proveedor` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `contacto` VARCHAR(191) NULL,
     `telefono` VARCHAR(191) NULL,
@@ -173,7 +174,7 @@ CREATE TABLE `Proveedor` (
 
 -- CreateTable
 CREATE TABLE `UnidadMedida` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `descripcion` VARCHAR(191) NULL,
     `creado_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -185,16 +186,16 @@ CREATE TABLE `UnidadMedida` (
 
 -- CreateTable
 CREATE TABLE `Producto` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `sku` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `descripcion` VARCHAR(191) NULL,
     `precio_compra` DOUBLE NOT NULL,
     `precio_venta` DOUBLE NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
-    `categoria_id` INTEGER NOT NULL,
-    `moneda_id` INTEGER NOT NULL,
-    `impuesto_id` INTEGER NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
+    `categoria_id` VARCHAR(191) NOT NULL,
+    `moneda_id` VARCHAR(191) NOT NULL,
+    `impuesto_id` VARCHAR(191) NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
     `creado_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `actualizado_at` DATETIME(3) NOT NULL,
@@ -205,9 +206,9 @@ CREATE TABLE `Producto` (
 
 -- CreateTable
 CREATE TABLE `ProductoUnidad` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `producto_id` INTEGER NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
     `factor` DOUBLE NOT NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
 
@@ -217,9 +218,9 @@ CREATE TABLE `ProductoUnidad` (
 
 -- CreateTable
 CREATE TABLE `Inventario` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `producto_id` INTEGER NOT NULL,
-    `almacen_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `almacen_id` VARCHAR(191) NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `minimo_stock` INTEGER NOT NULL,
     `actualizado_at` DATETIME(3) NOT NULL,
@@ -229,8 +230,8 @@ CREATE TABLE `Inventario` (
 
 -- CreateTable
 CREATE TABLE `MovimientoInventario` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `inventario_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `inventario_id` VARCHAR(191) NOT NULL,
     `tipo` ENUM('ingreso', 'egreso', 'ajuste') NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -261,7 +262,7 @@ CREATE TABLE `Cliente` (
 
 -- CreateTable
 CREATE TABLE `SeriesDocumento` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `tipo_documento` ENUM('factura', 'boleta', 'ticket') NOT NULL,
     `serie` VARCHAR(191) NOT NULL,
     `ultimo_numero` INTEGER NOT NULL DEFAULT 0,
@@ -273,8 +274,8 @@ CREATE TABLE `SeriesDocumento` (
 
 -- CreateTable
 CREATE TABLE `Factura` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `serie_documento_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `serie_documento_id` VARCHAR(191) NOT NULL,
     `numero` INTEGER NOT NULL,
     `cliente_id` VARCHAR(191) NOT NULL,
     `empleado_id` VARCHAR(191) NOT NULL,
@@ -284,22 +285,22 @@ CREATE TABLE `Factura` (
     `subtotal` DOUBLE NOT NULL,
     `total_impuestos` DOUBLE NOT NULL,
     `total` DOUBLE NOT NULL,
-    `moneda_id` INTEGER NOT NULL,
+    `moneda_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `DetalleFactura` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `factura_id` INTEGER NOT NULL,
-    `producto_id` INTEGER NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `factura_id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `precio_unitario` DOUBLE NOT NULL,
     `descuento` DOUBLE NOT NULL,
     `subtotal` DOUBLE NOT NULL,
-    `impuesto_id` INTEGER NULL,
+    `impuesto_id` VARCHAR(191) NULL,
     `porcentaje_impuesto` DOUBLE NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -307,8 +308,8 @@ CREATE TABLE `DetalleFactura` (
 
 -- CreateTable
 CREATE TABLE `Pago` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `factura_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `factura_id` VARCHAR(191) NOT NULL,
     `fecha_pago` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `metodo_pago` ENUM('efectivo', 'tarjeta', 'transferencia', 'otro') NOT NULL,
     `monto` DOUBLE NOT NULL,
@@ -319,23 +320,23 @@ CREATE TABLE `Pago` (
 
 -- CreateTable
 CREATE TABLE `OrdenCompra` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `proveedor_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `proveedor_id` VARCHAR(191) NOT NULL,
     `empleado_id` VARCHAR(191) NOT NULL,
     `fecha_orden` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `estado` ENUM('factura', 'boleta', 'ticket') NOT NULL,
     `total` DOUBLE NOT NULL,
-    `moneda_id` INTEGER NOT NULL,
+    `moneda_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `DetalleOrdenCompra` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `orden_compra_id` INTEGER NOT NULL,
-    `producto_id` INTEGER NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `orden_compra_id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `precio_unitario` DOUBLE NOT NULL,
     `subtotal` DOUBLE NOT NULL,
@@ -345,8 +346,8 @@ CREATE TABLE `DetalleOrdenCompra` (
 
 -- CreateTable
 CREATE TABLE `DevolucionVenta` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `factura_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `factura_id` VARCHAR(191) NOT NULL,
     `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `motivo` VARCHAR(191) NULL,
 
@@ -355,10 +356,10 @@ CREATE TABLE `DevolucionVenta` (
 
 -- CreateTable
 CREATE TABLE `DetalleDevolucionVenta` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `devolucion_id` INTEGER NOT NULL,
-    `producto_id` INTEGER NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `devolucion_id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `precio_unitario` DOUBLE NOT NULL,
     `subtotal` DOUBLE NOT NULL,
@@ -368,8 +369,8 @@ CREATE TABLE `DetalleDevolucionVenta` (
 
 -- CreateTable
 CREATE TABLE `DevolucionCompra` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `orden_compra_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `orden_compra_id` VARCHAR(191) NOT NULL,
     `fecha` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `motivo` VARCHAR(191) NULL,
 
@@ -378,10 +379,10 @@ CREATE TABLE `DevolucionCompra` (
 
 -- CreateTable
 CREATE TABLE `DetalleDevolucionCompra` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `devolucion_id` INTEGER NOT NULL,
-    `producto_id` INTEGER NOT NULL,
-    `unidad_medida_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `devolucion_id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
+    `unidad_medida_id` VARCHAR(191) NOT NULL,
     `cantidad` INTEGER NOT NULL,
     `precio_unitario` DOUBLE NOT NULL,
     `subtotal` DOUBLE NOT NULL,
@@ -391,7 +392,7 @@ CREATE TABLE `DetalleDevolucionCompra` (
 
 -- CreateTable
 CREATE TABLE `Caja` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `ubicacion` VARCHAR(191) NULL,
     `activo` BOOLEAN NOT NULL DEFAULT true,
@@ -403,8 +404,8 @@ CREATE TABLE `Caja` (
 
 -- CreateTable
 CREATE TABLE `AperturaCaja` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `caja_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `caja_id` VARCHAR(191) NOT NULL,
     `empleado_id` VARCHAR(191) NOT NULL,
     `fecha_apertura` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `monto_inicial` DOUBLE NOT NULL,
@@ -414,8 +415,8 @@ CREATE TABLE `AperturaCaja` (
 
 -- CreateTable
 CREATE TABLE `MovimientoCaja` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `apertura_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `apertura_id` VARCHAR(191) NOT NULL,
     `tipo` ENUM('ingreso', 'egreso', 'ajuste') NOT NULL,
     `fecha_movimiento` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `monto` DOUBLE NOT NULL,
@@ -427,8 +428,8 @@ CREATE TABLE `MovimientoCaja` (
 
 -- CreateTable
 CREATE TABLE `CierreCaja` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `apertura_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `apertura_id` VARCHAR(191) NOT NULL,
     `fecha_cierre` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `monto_final` DOUBLE NOT NULL,
     `total_ventas` DOUBLE NOT NULL,
@@ -441,9 +442,9 @@ CREATE TABLE `CierreCaja` (
 
 -- CreateTable
 CREATE TABLE `Auditoria` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `tabla_nombre` VARCHAR(191) NOT NULL,
-    `registro_id` INTEGER NOT NULL,
+    `registro_id` VARCHAR(191) NOT NULL,
     `accion` VARCHAR(191) NOT NULL,
     `datos_anteriores` JSON NULL,
     `datos_nuevos` JSON NULL,
@@ -456,7 +457,7 @@ CREATE TABLE `Auditoria` (
 
 -- CreateTable
 CREATE TABLE `Promocion` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `nombre` VARCHAR(191) NOT NULL,
     `tipo` ENUM('porcentaje', 'monto_fijo') NOT NULL,
     `valor` DOUBLE NOT NULL,
@@ -470,17 +471,17 @@ CREATE TABLE `Promocion` (
 
 -- CreateTable
 CREATE TABLE `ProductoPromocion` (
-    `promocion_id` INTEGER NOT NULL,
-    `producto_id` INTEGER NOT NULL,
+    `promocion_id` VARCHAR(191) NOT NULL,
+    `producto_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`promocion_id`, `producto_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `CuentaPorCobrar` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `cliente_id` VARCHAR(191) NOT NULL,
-    `factura_id` INTEGER NOT NULL,
+    `factura_id` VARCHAR(191) NOT NULL,
     `monto_total` DOUBLE NOT NULL,
     `monto_pagado` DOUBLE NOT NULL DEFAULT 0,
     `saldo` DOUBLE NOT NULL,
@@ -493,9 +494,9 @@ CREATE TABLE `CuentaPorCobrar` (
 
 -- CreateTable
 CREATE TABLE `EmpleadoInventario` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `empleado_id` VARCHAR(191) NOT NULL,
-    `inventario_id` INTEGER NOT NULL,
+    `inventario_id` VARCHAR(191) NOT NULL,
     `fecha_asignacion` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `activo` BOOLEAN NOT NULL DEFAULT true,
 
@@ -505,12 +506,12 @@ CREATE TABLE `EmpleadoInventario` (
 
 -- CreateTable
 CREATE TABLE `AsientoContable` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `fecha` DATETIME(3) NOT NULL,
     `descripcion` VARCHAR(191) NULL,
     `empleado_id` VARCHAR(191) NOT NULL,
     `tipo_documento` VARCHAR(191) NULL,
-    `documento_id` INTEGER NULL,
+    `documento_id` VARCHAR(191) NULL,
     `creado_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
@@ -518,8 +519,8 @@ CREATE TABLE `AsientoContable` (
 
 -- CreateTable
 CREATE TABLE `DetalleAsientoContable` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `asiento_id` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `asiento_id` VARCHAR(191) NOT NULL,
     `cuenta_contable` VARCHAR(191) NOT NULL,
     `debe` DOUBLE NOT NULL,
     `haber` DOUBLE NOT NULL,
@@ -541,6 +542,14 @@ CREATE TABLE `Configuracion` (
     PRIMARY KEY (`clave`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `CajaSucursal` (
+    `caja_id` VARCHAR(191) NOT NULL,
+    `sucursal_id` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`caja_id`, `sucursal_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `RolPermiso` ADD CONSTRAINT `RolPermiso_rolId_fkey` FOREIGN KEY (`rolId`) REFERENCES `Rol`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -548,7 +557,10 @@ ALTER TABLE `RolPermiso` ADD CONSTRAINT `RolPermiso_rolId_fkey` FOREIGN KEY (`ro
 ALTER TABLE `RolPermiso` ADD CONSTRAINT `RolPermiso_permisoId_fkey` FOREIGN KEY (`permisoId`) REFERENCES `Permiso`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Empleado` ADD CONSTRAINT `Empleado_puesto_id_fkey` FOREIGN KEY (`puesto_id`) REFERENCES `Puesto`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Empleado` ADD CONSTRAINT `Empleado_puesto_id_fkey` FOREIGN KEY (`puesto_id`) REFERENCES `Puesto`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Empleado` ADD CONSTRAINT `Empleado_sucursal_id_fkey` FOREIGN KEY (`sucursal_id`) REFERENCES `Sucursal`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Usuarios` ADD CONSTRAINT `Usuarios_empleado_id_fkey` FOREIGN KEY (`empleado_id`) REFERENCES `Empleado`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -702,3 +714,9 @@ ALTER TABLE `DetalleAsientoContable` ADD CONSTRAINT `DetalleAsientoContable_asie
 
 -- AddForeignKey
 ALTER TABLE `Configuracion` ADD CONSTRAINT `Configuracion_sucursal_id_fkey` FOREIGN KEY (`sucursal_id`) REFERENCES `Sucursal`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CajaSucursal` ADD CONSTRAINT `CajaSucursal_caja_id_fkey` FOREIGN KEY (`caja_id`) REFERENCES `Caja`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CajaSucursal` ADD CONSTRAINT `CajaSucursal_sucursal_id_fkey` FOREIGN KEY (`sucursal_id`) REFERENCES `Sucursal`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

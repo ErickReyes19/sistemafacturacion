@@ -14,7 +14,8 @@ export const EmpleadoSchema = z.object({
       invalid_type_error: "La fecha de nacimiento debe ser una fecha válida",
     })
     .refine((d) => d <= new Date(), "La fecha de nacimiento no puede ser futura"),
-
+ 
+  sucursal_id: z.string().optional(),
   fechaIngreso: z
     .date({
       required_error: "La fecha de ingreso es requerida",

@@ -19,6 +19,9 @@ export interface Employee {
   usuario_id: string;
   usuario?: string;
 
+  sucursal_id: string;
+  sucursal?: string;
+
   puesto_id: string;
   puesto?: string;
 

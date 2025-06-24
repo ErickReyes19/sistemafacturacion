@@ -5,6 +5,7 @@ import { PlusCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 import { EmpleadoFormulario } from "../components/Form"; // Asegúrate de que el formulario sea para Empleados
 import { getPuestosActivas } from "../../puestos/actions";
+import { getSucursalesActivas } from "../../sucursales/actions";
 
 export default async function Create() {
   const permisos = await getSessionPermisos();
@@ -23,7 +24,7 @@ export default async function Create() {
 
   // Determina qué lista de puestos cargar según el rol del usuario
   const puestos = await getPuestosActivas()
-
+  const sucursales = await getSucursalesActivas() 
 
   const initialData = {
     id: "",
@@ -38,6 +39,7 @@ export default async function Create() {
     numeroIdentificacion: "",
     fechaIngreso: new Date(),
     telefono: "",
+    sucursal_id: "",
   };
 
 
@@ -49,6 +51,7 @@ export default async function Create() {
         screenName="Crear Empleado" // Cambié la pantalla a "Crear Empleado"
       />
       <EmpleadoFormulario
+        sucursales={sucursales || []}
         puestos={puestos || []}
         isUpdate={false} // Esto es para indicar que estamos creando, no actualizando
         initialData={initialData} // Datos iniciales para crear un nuevo empleado

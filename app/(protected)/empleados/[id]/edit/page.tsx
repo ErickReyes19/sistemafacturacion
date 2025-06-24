@@ -7,6 +7,7 @@ import { Pencil } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getEmpleadoById } from "../../actions";
 import { EmpleadoFormulario } from "../../components/Form";
+import { getSucursalesActivas } from "@/app/(protected)/sucursales/actions";
 
 export default async function Edit({ params }: { params: { id: string } }) {
   // Verificar si hay una sesión activa
@@ -16,7 +17,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
     return <NoAcceso />;
   }
   const puestos = await getPuestosActivas()
-
+  const sucursales = await getSucursalesActivas() 
 
   // Obtener el cliente por getEmpleadoById ID
   const empleado = await getEmpleadoById(params.id);
@@ -36,6 +37,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
     numeroIdentificacion: empleado.numeroIdentificacion || "",
     fechaIngreso: empleado.fechaIngreso ? new Date(empleado.fechaIngreso) : new Date(),
     telefono: empleado.telefono || "",
+    sucursal_id: empleado.sucursal_id || "",
   };
 
   return (
@@ -46,6 +48,7 @@ export default async function Edit({ params }: { params: { id: string } }) {
         screenName="Editar Empleado"
       />
       <EmpleadoFormulario
+        sucursales={sucursales || []}
         puestos={puestos || []}
         isUpdate={true} // Esto es para indicar que estamos creando, no actualizando
         initialData={initialData} // Datos iniciales para crear un nuevo empleado

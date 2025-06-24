@@ -11,6 +11,7 @@ export interface EmployeeImportDto {
 
     telefono: string;
     email: string;
+    sucursal_id: string;
  // opcional, si el Excel no trae este campo
     genero: string;
     activo?: boolean; // opcional, puedes asignar un default en la acción
@@ -25,6 +26,8 @@ export type Empleado = {
     id?: string;
     nombre: string;
     apellido: string;
+    sucursal_id?: string;
+    sucursal?: string;
     correo: string;
     fechaNacimiento: Date;
     fechaIngreso?: Date;
@@ -44,6 +47,7 @@ export interface EmployeeDto {
     apellidos: string;
     fechaNacimiento: string; // "YYYY-MM-DD"
     genero: string;
+    sucursal: string;
     telefono: string;
     email: string;
     fechaIngreso: string;       // puesto

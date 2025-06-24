@@ -36,13 +36,13 @@ export async function requestPasswordReset(username: string): Promise<boolean> {
     const user = await prisma.usuarios.findFirst({
         where: { usuario: username },
         include: {
-            Empleados: {
+            empleado: {
                 select: { correo: true, nombre: true, apellido: true },
             },
         },
     });
     // Si no existe usuario o no hay empleado/correo, no divulgamos la razón
-    if (!user || !user.Empleados?.correo) {
+    if (!user || !user.empleado?.correo) {
         return false;
     }
 
@@ -68,10 +68,10 @@ export async function requestPasswordReset(username: string): Promise<boolean> {
     const link = `${baseUrl}/forgot-password?token=${encodeURIComponent(token)}`;
 
     // 5️⃣ Preparar correo usando la plantilla
-    const fullName = `${user.Empleados.nombre} ${user.Empleados.apellido}`;
+    const fullName = `${user.empleado.nombre} ${user.empleado.apellido}`;
     const html = generatePasswordResetEmailHtml(fullName, link);
     const mailPayload: MailPayload = {
-        to: user.Empleados.correo,
+        to: user.empleado.correo,
         subject: "Restablecer contraseña",
         html,
     };
@@ -98,7 +98,7 @@ export async function resetPassword(
     // 1️⃣ Buscar el registro de token
     const record = await prisma.passwordResetToken.findUnique({
         where: { token },
-        include: { Usuario: true },
+        include: { usuario: true },
     });
     if (!record) return false;
 
@@ -114,7 +114,7 @@ export async function resetPassword(
         where: { id: record.userId },
         data: {
             contrasena: hashed,
-            DebeCambiarPassword: false,
+            debeCambiarPwd: false,
         },
     });
 

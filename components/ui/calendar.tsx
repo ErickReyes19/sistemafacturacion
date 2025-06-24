@@ -1,21 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
-import * as React from "react"
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react"
+import * as React from "react"
 import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
 
-import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { es } from "date-fns/locale"
 
 function Calendar({
   className,
   classNames,
-  showOutsideDays = true,
-  captionLayout = "label",
+  locale = es,
+  showOutsideDays = false,
+  captionLayout = "dropdown",
   buttonVariant = "ghost",
   formatters,
   components,
@@ -30,18 +33,21 @@ function Calendar({
       showOutsideDays={showOutsideDays}
       className={cn(
         "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        "dark:bg-background", // Asegura el fondo en dark mode
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
+        formatMonthDropdown: (date, options) =>
+          date.toLocaleString(locale?.code || "es-ES", { month: "long" }),
+        formatYearDropdown: (date, options) =>
+          date.toLocaleString(locale?.code || "es-ES", { year: "numeric" }),
         ...formatters,
       }}
       classNames={{
-        root: cn("w-fit", defaultClassNames.root),
+        root: cn("w-fit", "bg-background", "dark:bg-background", defaultClassNames.root),
         months: cn(
           "relative flex flex-col gap-4 md:flex-row",
           defaultClassNames.months
@@ -66,14 +72,24 @@ function Calendar({
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
-          "flex h-[--cell-size] w-full items-center justify-center gap-1.5 text-sm font-medium",
+          "flex h-[--cell-size] w-full items-center justify-center gap-1.5 text-sm font-medium ",
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
           "has-focus:border-ring border-input shadow-xs has-focus:ring-ring/50 has-focus:ring-[3px] relative rounded-md border",
+          // aseguras fondo y texto
+          "bg-background ",
+          "text-foreground dark:text-white",
           defaultClassNames.dropdown_root
         ),
-        dropdown: cn("absolute inset-0 opacity-0", defaultClassNames.dropdown),
+        dropdown: cn(
+          "absolute inset-0 opacity-0",
+          "dark:bg-background",
+          // forzamos color de texto en opciones
+          "text-foreground dark:text-white",
+          defaultClassNames.dropdown
+        ),
+
         caption_label: cn(
           "select-none font-medium",
           captionLayout === "label"
@@ -98,6 +114,7 @@ function Calendar({
         ),
         day: cn(
           "group/day relative aspect-square h-full w-full select-none p-0 text-center [&:first-child[data-selected=true]_button]:rounded-l-md [&:last-child[data-selected=true]_button]:rounded-r-md",
+          "bg-background", "dark:bg-background", // Asegura fondo en días
           defaultClassNames.day
         ),
         range_start: cn(

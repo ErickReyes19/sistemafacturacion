@@ -19,8 +19,9 @@ export async function getProfile(): Promise<Employee | null> {
   const e = await prisma.empleado.findFirst({
     where: { id: idEmpleado },
     include: {
-      usuarios: true,
+      usuario: true,
       puesto: true,
+      sucursal: true,
     },
   });
 
@@ -37,7 +38,7 @@ export async function getProfile(): Promise<Employee | null> {
     nombre: e.nombre,
     apellido: e.apellido,
     correo: e.correo,
-    usuario: e.usuarios?.usuario || "No especificado", // Asegúrate de que 'usuario' tenga un valor por defecto
+    usuario: e.usuario?.usuario || "No especificado", // Asegúrate de que 'usuario' tenga un valor por defecto
     fechaNacimiento: e.fechaNacimiento ?? new Date(0),
     genero: e.genero || "No especificado", // Asegúrate de que 'genero' tenga un valor por defecto
     activo: e.activo,
@@ -45,6 +46,8 @@ export async function getProfile(): Promise<Employee | null> {
     telefono: e.telefono || "No especificado", // Asegúrate de que 'telefono' tenga un valor por defecto
     createAt: e.creado_at ?? new Date(0), // Asegúrate de que 'createAt' tenga un valor por defecto
     updateAt: e.actualizado_at ?? new Date(0), // Asegúrate de que 'updateAt' tenga un valor por defecto
-    usuario_id: e.usuarios?.id ?? "", // Ajusta según el campo real de usuario_id
+    usuario_id: e.usuario?.id ?? "", // Ajusta según el campo real de usuario_id
+    sucursal_id: e.sucursal_id || "No especificado", // Asegúrate de que 'sucursal_id' tenga un valor por defecto
+    sucursal: e.sucursal?.nombre || "No especificado", // Asegúrate de que 'sucursal' tenga un valor por defecto
   };
 }

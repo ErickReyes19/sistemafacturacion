@@ -98,6 +98,8 @@ export default function EmployeeProfile({ employee }: EmployeeProfileProps) {
                                 <dt className="font-medium text-muted-foreground">Correo:</dt>
                                 <dd>{employee.correo}</dd>
 
+                                <dt className="font-medium text-muted-foreground">Sucursal:</dt>
+                                <dd>{employee.sucursal}</dd>
 
                             </dl>
                         </div>

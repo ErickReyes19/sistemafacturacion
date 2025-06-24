@@ -69,6 +69,21 @@ async function main() {
     { nombre: "crear_impuestos", descripcion: "Permiso para crear impuestos" },
     { nombre: "editar_impuestos", descripcion: "Permiso para editar impuestos" },
 
+    // sucursales
+    { nombre: "ver_sucursales", descripcion: "Permiso para ver las sucursales" },
+    { nombre: "crear_sucursales", descripcion: "Permiso para crear sucursales" },
+    { nombre: "editar_sucursales", descripcion: "Permiso para editar sucursales" },
+
+    // cajas
+    { nombre: "ver_caja", descripcion: "Permiso para ver las cajas" },
+    { nombre: "crear_caja", descripcion: "Permiso para crear cajas" },
+    { nombre: "editar_caja", descripcion: "Permiso para editar cajas" },
+
+    // almacenes
+    { nombre: "ver_almacen", descripcion: "Permiso para ver los almacenes" },
+    { nombre: "crear_almacen", descripcion: "Permiso para crear almacenes" },
+    { nombre: "editar_almacen", descripcion: "Permiso para editar almacenes" },
+
     // Perfil
     { nombre: "ver_profile", descripcion: "Permiso para ver el perfil" },
 
@@ -91,6 +106,32 @@ async function main() {
       console.log(`Permiso existente: ${p.nombre}`);
     }
     permisoIds.push(permiso.id);
+  }
+  // 2.1. Crear sucursales
+  const sucursalesData = [
+    { id: randomUUID(), nombre: "Sucursal 1", direccion: "Sucursal 1", telefono: "1234567890", activo: true },
+    { id: randomUUID(), nombre: "Sucursal 2", direccion: "Sucursal 2", telefono: "1234567890", activo: true },
+    { id: randomUUID(), nombre: "Sucursal 3", direccion: "Sucursal 3", telefono: "1234567890", activo: true },
+  ];
+  
+  const createdSucursales: any[] = [];
+  for (const s of sucursalesData) {
+    let sucursal = await prisma.sucursal.findUnique({ where: { nombre: s.nombre } });
+    if (!sucursal) {
+      sucursal = await prisma.sucursal.create({
+        data: {
+          id: s.id, // Use the predefined ID
+          nombre: s.nombre,
+          direccion: s.direccion,
+          telefono: s.telefono,
+          activo: s.activo,
+        },
+      });
+      console.log(`Sucursal creada: ${s.nombre}`);
+    } else {
+      console.log(`Sucursal existente: ${s.nombre}`);
+    }
+    createdSucursales.push(sucursal);
   }
 
   // 3. Crear rol Administrador
@@ -140,6 +181,7 @@ async function main() {
       data: {
         id: randomUUID(),
         nombre: "Erick Jose",
+        sucursal_id: createdSucursales[0].id, // Use the created sucursal ID
         apellido: "Reyes Pineda",
         puesto_id: puesto.id,
         correo: "erickjosepineda33@gmail.com",

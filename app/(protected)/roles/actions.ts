@@ -108,42 +108,6 @@ export async function putRol({ rol }: { rol: RolDTO }): Promise<RolDTO | null> {
   }
 }
 
-
-
-export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
-  try {
-    const rol = await prisma.rol.findUnique({
-      where: { id },
-      include: {
-        permisos: {
-          include: {
-            permiso: true,
-          },
-        },
-      },
-    });
-
-    if (!rol) {
-      return null;
-    }
-
-    return {
-      id: rol.id,
-      nombre: rol.nombre,
-      descripcion: rol.descripcion ?? "",
-      activo: rol.activo,
-      permisos: rol.permisos.map((rp): PermisosRol => ({
-        id: rp.permiso.id,
-        nombre: rp.permiso.nombre,
-      })),
-    };
-  } catch (error) {
-    console.error("Error al obtener el rol por ID:", error);
-    return null;
-  }
-}
-
-
 export async function postRol({ rol }: { rol: RolDTO; }): Promise<RolDTO> {
   // Verificar si el rol ya existe
   const existente = await prisma.rol.findUnique({
@@ -201,3 +165,38 @@ export async function postRol({ rol }: { rol: RolDTO; }): Promise<RolDTO> {
     throw error;
   }
 }
+
+
+export async function getRolPermisoById(id: string): Promise<RolDTO | null> {
+  try {
+    const rol = await prisma.rol.findUnique({
+      where: { id },
+      include: {
+        permisos: {
+          include: {
+            permiso: true,
+          },
+        },
+      },
+    });
+
+    if (!rol) {
+      return null;
+    }
+
+    return {
+      id: rol.id,
+      nombre: rol.nombre,
+      descripcion: rol.descripcion ?? "",
+      activo: rol.activo,
+      permisos: rol.permisos.map((rp): PermisosRol => ({
+        id: rp.permiso.id,
+        nombre: rp.permiso.nombre,
+      })),
+    };
+  } catch (error) {
+    console.error("Error al obtener el rol por ID:", error);
+    return null;
+  }
+}
+

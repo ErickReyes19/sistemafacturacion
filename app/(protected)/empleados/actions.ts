@@ -10,8 +10,9 @@ import { Empleado } from "./type"; // Asegúrate de que `EmployeeImportDto` cont
 export async function getEmpleados(): Promise<Empleado[]> {
   const records = await prisma.empleado.findMany({
     include: {
-      usuarios: true,
-      puesto: true
+      usuario: true,
+      puesto: true,
+      sucursal: true,
     },
   });
 
@@ -20,13 +21,15 @@ export async function getEmpleados(): Promise<Empleado[]> {
     nombre: r.nombre,
     apellido: r.apellido,
     correo: r.correo,
+    sucursal_id: r.sucursal_id,
+    sucursal: r.sucursal ? r.sucursal.nombre : "Sin Sucursal",
     fechaNacimiento: r.fechaNacimiento ?? new Date(0),
     fechaIngreso: r.fechaIngreso ?? new Date(0),
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
     genero: r.genero ?? "",
     activo: r.activo,
-    usuario: r.usuarios?.usuario ?? "Sin Usuario",
+    usuario: r.usuario?.usuario ?? "Sin Usuario",
     puesto_id: r.puesto_id,puesto: r.puesto.nombre,
   }));
 }
@@ -36,8 +39,8 @@ export async function getEmpleados(): Promise<Empleado[]> {
  */
 export async function getEmpleadosSinUsuario(): Promise<Empleado[]> {
   const records = await prisma.empleado.findMany({
-    where: { usuarios: null },
-    include: { puesto: true },
+    where: { usuario: null },
+    include: { puesto: true, sucursal: true },
   });
   return records.map((r) => ({
     id: r.id,
@@ -49,6 +52,8 @@ export async function getEmpleadosSinUsuario(): Promise<Empleado[]> {
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
     genero: r.genero ?? "",
+    sucursal_id: r.sucursal_id,
+    sucursal: r.sucursal ? r.sucursal.nombre : "Sin Sucursal",
     activo: r.activo,
     usuario: null,
     puesto_id: r.puesto_id,
@@ -64,7 +69,8 @@ export async function getEmpleadoById(id: string): Promise<Empleado | null> {
     where: { id },
     include: {
       puesto: true,
-      usuarios: true,
+      usuario: true,
+      sucursal: true,
     },
   });
   if (!r) return null;
@@ -73,13 +79,15 @@ export async function getEmpleadoById(id: string): Promise<Empleado | null> {
     nombre: r.nombre,
     apellido: r.apellido,
     correo: r.correo,
+    sucursal_id: r.sucursal_id,
+    sucursal: r.sucursal ? r.sucursal.nombre : "Sin Sucursal",
     fechaNacimiento: r.fechaNacimiento ?? new Date(0),
     fechaIngreso: r.fechaIngreso ?? new Date(0),
     numeroIdentificacion: r.numeroIdentificacion,
     telefono: r.telefono ?? "",
     genero: r.genero ?? "",
     activo: r.activo,
-    usuario: r.usuarios?.usuario ?? null,
+    usuario: r.usuario?.usuario ?? null,
     puesto_id: r.puesto_id,puesto: r.puesto.nombre,
   };
 }
@@ -94,6 +102,7 @@ export async function createEmpleado(data: Empleado): Promise<Empleado> {
       id,
       nombre: data.nombre,
       apellido: data.apellido,
+      sucursal_id: data.sucursal_id,
       correo: data.correo,
       fechaNacimiento: data.fechaNacimiento,
       fechaIngreso: data.fechaIngreso,
@@ -119,6 +128,7 @@ export async function updateEmpleado(
     data: {
       nombre: data.nombre,
       apellido: data.apellido,
+      sucursal_id: data.sucursal_id,
       correo: data.correo,
       fechaNacimiento: data.fechaNacimiento,
       fechaIngreso: data.fechaIngreso,

@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, ScaleIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
+import { BoxIcon, Building2Icon, ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, ScaleIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -90,6 +90,25 @@ const items = [
     icon: ScaleIcon,
     permiso: "ver_unidad_medidas",
   },
+  {
+    title: "Sucursales",
+    url: "/sucursales",
+    icon: Building2Icon,
+    permiso: "ver_sucursales",
+  },
+  {
+    title: "Cajas",
+    url: "/caja",
+    icon: LayersIcon,
+    permiso: "ver_caja",
+  },
+  {
+    title: "Almacenes",
+    url: "/almacen",
+    icon: BoxIcon,
+    permiso: "ver_almacen",
+  },
+
 
 
 

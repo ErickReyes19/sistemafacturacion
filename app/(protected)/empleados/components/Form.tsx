@@ -34,15 +34,18 @@ import { Puesto } from "../../puestos/types";
 import { createEmpleado, updateEmpleado } from "../actions";
 import { EmpleadoSchema } from "../schema";
 import { toast } from "sonner";
+import { Sucursal } from "../../sucursales/type";
 
 export function EmpleadoFormulario({
   isUpdate,
   initialData,
   puestos,
-}: {
+  sucursales,
+  }: {
   isUpdate: boolean;
   initialData?: z.infer<typeof EmpleadoSchema>;
   puestos: Puesto[];
+  sucursales: Sucursal[];
 }) {
   const router = useRouter();
 
@@ -69,8 +72,8 @@ export function EmpleadoFormulario({
       await updateEmpleado(empleadoData.id!, empleadoData.empleado);
       return { name: "Actualización" };
       } else {
-      await createEmpleado(empleadoData.empleado);
-      return { name: "Creación" };
+          await createEmpleado(empleadoData.empleado);
+        return { name: "Creación" };
       }
     };
 
@@ -126,6 +129,32 @@ export function EmpleadoFormulario({
                   <Input placeholder="Ingresa tu apellido" {...field} />
                 </FormControl>
                 <FormDescription>Por favor ingresa tu apellido.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Sucursal */}
+          <FormField
+            control={form.control}
+            name="sucursal_id"
+            render={({ field }) => (
+              <FormItem className="col-span-1">
+                <FormLabel>Sucursal</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona una sucursal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sucursales.map((sucursal) => (
+                        <SelectItem key={sucursal.id} value={sucursal.id || ""}>
+                          {sucursal.nombre}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormDescription>Selecciona la sucursal del empleado.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -200,7 +229,6 @@ export function EmpleadoFormulario({
                       disabled={(date) =>
                         date > new Date() || date < new Date("1900-01-01")
                       }
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>

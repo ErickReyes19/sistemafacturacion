@@ -8,8 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 enum Estado {
   activo
   inactivo
@@ -44,8 +42,6 @@ enum CxCEstado {
   cerrado
 }
 
-
-
 model Rol {
   id             String       @id @default(uuid())
   nombre         String       @unique
@@ -79,29 +75,30 @@ model RolPermiso {
 }
 
 model Empleado {
-  id                   String    @id @default(uuid())
+  id                   String               @id @default(uuid())
   puesto_id            String
+  sucursal_id          String               @default("ID_DE_TU_SUCURSAL")
   numeroIdentificacion String
   nombre               String
   apellido             String
-  correo               String    @db.LongText
+  correo               String               @db.LongText
   fechaNacimiento      DateTime?
   fechaIngreso         DateTime?
   telefono             String?
   genero               String?
-  activo               Boolean   @default(true)
-  creado_at            DateTime  @default(now())
-  actualizado_at       DateTime  @updatedAt
-
-  puesto          Puesto               @relation(fields: [puesto_id], references: [id], onDelete: Cascade)
-  usuarios        Usuarios?
-  inventarios     EmpleadoInventario[]
-  facturas        Factura[]            @relation("EmpleadoFacturas")
-  ordenes         OrdenCompra[]        @relation("EmpleadoOC")
-  movimientosCaja MovimientoCaja[]
-  auditoria       Auditoria?
-  asientos        AsientoContable[]
-  AperturaCaja    AperturaCaja[]
+  activo               Boolean              @default(true)
+  creado_at            DateTime             @default(now())
+  actualizado_at       DateTime             @updatedAt
+  puesto               Puesto               @relation(fields: [puesto_id], references: [id])
+  sucursal             Sucursal             @relation(fields: [sucursal_id], references: [id])
+  usuario              Usuarios?
+  movimientosCaja      MovimientoCaja[]
+  auditoria            Auditoria?
+  asientos             AsientoContable[]
+  AperturaCaja         AperturaCaja[]
+  Factura              Factura[]            @relation("EmpleadoFacturas")
+  OrdenCompra          OrdenCompra[]        @relation("EmpleadoOC")
+  EmpleadoInventario   EmpleadoInventario[]
 
   @@index([puesto_id])
 }
@@ -153,12 +150,14 @@ model Sucursal {
 
   almacenes       Almacen[]
   configuraciones Configuracion[]
+  cajas           CajaSucursal[]
+
+  Empleado Empleado[]
 }
 
 model Almacen {
   id         String   @id @default(uuid())
   nombre     String   @unique
-  ubicacion  String?
   activo     Boolean  @default(true)
   creado_at  DateTime @default(now())
   sucursalId String?
@@ -259,7 +258,7 @@ model Producto {
 }
 
 model ProductoUnidad {
-  id               String   @id @default(uuid())
+  id               String       @id @default(uuid())
   producto_id      String
   unidad_medida_id String
   factor           Float
@@ -285,7 +284,7 @@ model Inventario {
 }
 
 model MovimientoInventario {
-  id            String   @id @default(uuid())
+  id            String         @id @default(uuid())
   inventario_id String
   tipo          MovimientoTipo
   cantidad      Int
@@ -315,7 +314,7 @@ model Cliente {
 }
 
 model SeriesDocumento {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
   tipo_documento TipoDocumento
   serie          String
   ultimo_numero  Int           @default(0)
@@ -327,7 +326,7 @@ model SeriesDocumento {
 }
 
 model Factura {
-  id                 String   @id @default(uuid())
+  id                 String         @id @default(uuid())
   serie_documento_id String
   numero             Int
   cliente_id         String
@@ -352,7 +351,7 @@ model Factura {
 }
 
 model DetalleFactura {
-  id                  String   @id @default(uuid())
+  id                  String  @id @default(uuid())
   factura_id          String
   producto_id         String
   unidad_medida_id    String
@@ -370,7 +369,7 @@ model DetalleFactura {
 }
 
 model Pago {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   factura_id  String
   fecha_pago  DateTime   @default(now())
   metodo_pago PagoMetodo
@@ -381,7 +380,7 @@ model Pago {
 }
 
 model OrdenCompra {
-  id           String   @id @default(uuid())
+  id           String        @id @default(uuid())
   proveedor_id String
   empleado_id  String
   fecha_orden  DateTime      @default(now())
@@ -398,7 +397,7 @@ model OrdenCompra {
 }
 
 model DetalleOrdenCompra {
-  id               String   @id @default(uuid())
+  id               String @id @default(uuid())
   orden_compra_id  String
   producto_id      String
   unidad_medida_id String
@@ -422,7 +421,7 @@ model DevolucionVenta {
 }
 
 model DetalleDevolucionVenta {
-  id               String   @id @default(uuid())
+  id               String @id @default(uuid())
   devolucion_id    String
   producto_id      String
   unidad_medida_id String
@@ -446,7 +445,7 @@ model DevolucionCompra {
 }
 
 model DetalleDevolucionCompra {
-  id               String   @id @default(uuid())
+  id               String @id @default(uuid())
   devolucion_id    String
   producto_id      String
   unidad_medida_id String
@@ -461,13 +460,12 @@ model DetalleDevolucionCompra {
 
 model Caja {
   id        String   @id @default(uuid())
-  nombre    String  @unique
-  ubicacion String?
-
+  nombre    String   @unique
   activo    Boolean  @default(true)
   creado_at DateTime @default(now())
 
-  aperturas AperturaCaja[]
+  aperturas  AperturaCaja[]
+  sucursales CajaSucursal[]
 }
 
 model AperturaCaja {
@@ -484,7 +482,7 @@ model AperturaCaja {
 }
 
 model MovimientoCaja {
-  id               String   @id @default(uuid())
+  id               String         @id @default(uuid())
   apertura_id      String
   tipo             MovimientoTipo
   fecha_movimiento DateTime       @default(now())
@@ -522,7 +520,7 @@ model Auditoria {
 }
 
 model Promocion {
-  id           String   @id @default(uuid())
+  id           String        @id @default(uuid())
   nombre       String
   tipo         PromocionTipo
   valor        Float
@@ -545,9 +543,9 @@ model ProductoPromocion {
 }
 
 model CuentaPorCobrar {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   cliente_id   String
-  factura_id   String   @unique
+  factura_id   String    @unique
   monto_total  Float
   monto_pagado Float     @default(0)
   saldo        Float
@@ -585,7 +583,7 @@ model AsientoContable {
 }
 
 model DetalleAsientoContable {
-  id              String   @id @default(uuid())
+  id              String  @id @default(uuid())
   asiento_id      String
   cuenta_contable String
   debe            Float
@@ -605,4 +603,14 @@ model Configuracion {
   actualizado_at DateTime @updatedAt
 
   sucursal Sucursal? @relation(fields: [sucursal_id], references: [id])
+}
+
+model CajaSucursal {
+  caja_id     String
+  sucursal_id String
+
+  caja     Caja     @relation(fields: [caja_id], references: [id], onDelete: Cascade)
+  sucursal Sucursal @relation(fields: [sucursal_id], references: [id], onDelete: Cascade)
+
+  @@id([caja_id, sucursal_id])
 }
