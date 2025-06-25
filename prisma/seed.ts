@@ -83,6 +83,12 @@ async function main() {
     { nombre: "ver_almacen", descripcion: "Permiso para ver los almacenes" },
     { nombre: "crear_almacen", descripcion: "Permiso para crear almacenes" },
     { nombre: "editar_almacen", descripcion: "Permiso para editar almacenes" },
+    
+
+    // almacenes
+    { nombre: "ver_proveedores", descripcion: "Permiso para ver los almacenes" },
+    { nombre: "crear_proveedores", descripcion: "Permiso para crear proveedores" },
+    { nombre: "editar_proveedores", descripcion: "Permiso para editar proveedores" },
 
     // Perfil
     { nombre: "ver_profile", descripcion: "Permiso para ver el perfil" },

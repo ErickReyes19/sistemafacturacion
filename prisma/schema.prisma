@@ -204,10 +204,10 @@ model Impuesto {
 model Proveedor {
   id             String   @id @default(uuid())
   nombre         String
-  contacto       String?
   telefono       String?
   email          String?
   direccion      String?
+  activo         Boolean @default(true)
   creado_at      DateTime @default(now())
   actualizado_at DateTime @updatedAt
 

@@ -15,7 +15,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { BoxIcon, Building2Icon, ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, ScaleIcon, Settings, UserIcon, UserRoundCheck, Users, UsersIcon } from 'lucide-react';
+import { BoxIcon, Building2Icon, ChevronDown, ChevronUp, CoinsIcon, LayersIcon, PercentIcon, ScaleIcon, Settings, UserIcon, UserRoundCheck, Users, Users2, UsersIcon } from 'lucide-react';
 import Link from "next/link";
 import ToggleThemeButton from "../components/button-theme";
 import { NavUser } from "./nav-user";
@@ -107,6 +107,12 @@ const items = [
     url: "/almacen",
     icon: BoxIcon,
     permiso: "ver_almacen",
+  },
+  {
+    title: "Proveedores",
+    url: "/proveedor",
+    icon: Users2,
+    permiso: "ver_proveedores",
   },
 
 
