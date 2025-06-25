@@ -30,7 +30,8 @@ export function NavUser({
         Rol: string;
         IdRol: string;
         IdEmpleado: string;
-
+        Sucursal: string;
+        SucursalId: string;
         Permiso: string[];
 
     }
@@ -51,6 +52,7 @@ export function NavUser({
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-semibold">{usuario?.User}</span>
                             <span className="truncate text-xs">{usuario?.Rol}</span>
+                            <span className="truncate text-xs">{usuario?.Sucursal}</span>
                         </div>
                         <ChevronsUpDown className="ml-auto size-4" />
                     </SidebarMenuButton>

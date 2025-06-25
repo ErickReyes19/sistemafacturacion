@@ -24,6 +24,8 @@ export interface UsuarioSesion extends JWTPayload {
     DebeCambiar: boolean;
     Puesto: string;
     PuestoId: string;
+    Sucursal: string;
+    SucursalId: string;
     // exp, iss, aud ya vienen de JWTPayload
 }
 
@@ -52,6 +54,8 @@ export const decrypt = async (token: string): Promise<UsuarioSesion> => {
         DebeCambiar: payload.DebeCambiar === true || payload.DebeCambiar === "True",
         Puesto: payload.Puesto as string,
         PuestoId: payload.PuestoId as string,
+        Sucursal: payload.Sucursal as string,
+        SucursalId: payload.SucursalId as string,
         exp: payload.exp as number,
         iss: payload.iss as string,
         aud: payload.aud as string,
@@ -158,7 +162,9 @@ const usuarioWithRolArgs = Prisma.validator<Prisma.UsuariosDefaultArgs>()({
         },
         empleado: {
             include: {
+                sucursal: true, // Incluimos la sucursal del empleado
                 puesto: true, // Incluimos el puesto del empleado
+                
             },
         },
 
@@ -181,18 +187,19 @@ export async function getADAuthentication(
         const user: UsuarioConRol | null = await prisma.usuarios.findFirst({
             where: { usuario: username },
             include: {
-                rol: {
-                    include: {
-                        permisos: {
-                            include: { permiso: true },
-                        },
-                    },
+            rol: {
+                include: {
+                permisos: {
+                    include: { permiso: true },
                 },
-                empleado: {
-                    include: {
-                        puesto: true,
-                    },
                 },
+            },
+            empleado: {
+                include: {
+                sucursal: true,
+                puesto: true,
+                },
+            },
             },
         });
 
@@ -214,7 +221,9 @@ export async function getADAuthentication(
             Permiso: permisos,
             DebeCambiar: user.debeCambiarPwd!,
             Puesto: user.empleado?.puesto?.nombre ?? "",
+            SucursalId: user.empleado?.sucursal_id ?? "",
             PuestoId: user.empleado?.puesto_id ?? "",
+            Sucursal: user.empleado?.sucursal?.nombre ?? "",
             exp: Math.floor(Date.now() / 1000) + 3600,
             iss: "your-issuer",
             aud: "your-audience",
@@ -277,7 +286,7 @@ export async function changePassword(
                     },
                 },
                 empleado: {
-                    include: { puesto: true },
+                    include: { puesto: true, sucursal: true},
                 },
             },
         });
@@ -296,6 +305,8 @@ export async function changePassword(
             DebeCambiar: updated.debeCambiarPwd!,
             Puesto: updated.empleado?.puesto?.nombre ?? "",
             PuestoId: updated.empleado?.puesto_id ?? "",
+            SucursalId: updated.empleado?.sucursal_id ?? "",
+            Sucursal: updated.empleado?.sucursal?.nombre ?? "",
             exp: Math.floor(Date.now() / 1000) + 3600,
             iss: "your-issuer",
             aud: "your-audience",
