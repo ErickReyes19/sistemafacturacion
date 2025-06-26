@@ -13,12 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { Inventario } from "../type";
+import { MovimientoInventario } from "../../../type";
 
-export const columns: ColumnDef<Inventario>[] = [
+export const columns: ColumnDef<MovimientoInventario>[] = [
 
   {
-    accessorKey: "almacen",
+    accessorKey: "inventario.almacen",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -44,17 +44,27 @@ export const columns: ColumnDef<Inventario>[] = [
     ),
   },
   {
-    accessorKey: "stock_minimo",
+    accessorKey: "fecha",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="text-left"
       >
-        Stock Mínimo
+        Fecha
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      const fecha = row.getValue("fecha") as Date;
+      return fecha ? fecha.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : '-';
+    },
   },
   {
     accessorKey: "cantidad",
@@ -65,6 +75,32 @@ export const columns: ColumnDef<Inventario>[] = [
         className="text-left"
       >
         Cantidad
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "tipo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="text-left"
+      >
+        Tipo
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "observaciones",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="text-left"
+      >
+        Observaciones
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -86,9 +122,6 @@ export const columns: ColumnDef<Inventario>[] = [
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <Link href={`/inventario/${inventario.id}/edit`}>
               <DropdownMenuItem>Editar</DropdownMenuItem>
-            </Link>
-            <Link href={`/inventario/${inventario.id}/movimiento`}>
-              <DropdownMenuItem>Movimientos</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
         </DropdownMenu>

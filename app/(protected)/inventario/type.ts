@@ -1,3 +1,4 @@
+import { MovimientoTipo } from "@/app/generated/prisma";
 
 export type Inventario = {
   id?: string;
@@ -7,5 +8,18 @@ export type Inventario = {
   almacen?: string;
   cantidad: number;
   stock_minimo: number;
+}
+
+
+
+export type MovimientoInventario = {
+  id?: string;
+  inventario_id: string;
+  tipo: MovimientoTipo;
+  producto?: string;
+  cantidad: number;
+  fecha: Date;
+  observaciones?: string;
+  inventario?: Inventario; // Relación opcional con Inventario
 }
 

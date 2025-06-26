@@ -99,6 +99,10 @@ async function main() {
     { nombre: "crear_inventario", descripcion: "Permiso para crear inventario" },
     { nombre: "editar_inventario", descripcion: "Permiso para editar inventario" },
 
+    // Movimientos de inventario
+    { nombre: "ver_movimientos_inventario", descripcion: "Permiso para ver los movimientos de inventario" },
+    { nombre: "crear_movimientos_inventario", descripcion: "Permiso para crear movimientos de inventario" },
+
     
 
     // Perfil

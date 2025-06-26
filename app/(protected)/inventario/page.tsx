@@ -7,7 +7,7 @@ import { columns } from "./components/columns";
 import { DataTable } from "./components/data-table";
 import AlmacenListMobile from "./components/almacen-list-mobile";
 
-export default async function Caja() {
+export default async function inventario() {
 
   const permisos = await getSessionPermisos();
 

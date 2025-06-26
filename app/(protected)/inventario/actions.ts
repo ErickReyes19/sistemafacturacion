@@ -30,7 +30,8 @@ export async function getInventarios(): Promise<Inventario[]> {
  * Obtiene una categoría por ID
  */
 export async function getInventarioById(id: string): Promise<Inventario | null> {
-  const r = await prisma.inventario.findUnique({
+  console.log("🚀 ~ getInventarioById ~ id:", id)
+  const r = await prisma.inventario.findFirst({
     where: { id: id },
     include: {
       almacen: true,
