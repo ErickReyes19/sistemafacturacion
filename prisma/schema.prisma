@@ -281,6 +281,8 @@ model Inventario {
   almacen     Almacen                @relation(fields: [almacen_id], references: [id])
   movimientos MovimientoInventario[]
   empleados   EmpleadoInventario[]
+
+  @@unique([producto_id, almacen_id]) 
 }
 
 model MovimientoInventario {

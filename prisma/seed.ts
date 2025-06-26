@@ -94,6 +94,11 @@ async function main() {
     { nombre: "crear_proveedores", descripcion: "Permiso para crear proveedores" },
     { nombre: "editar_proveedores", descripcion: "Permiso para editar proveedores" },
 
+    // inventario
+    { nombre: "ver_inventario", descripcion: "Permiso para ver el inventario" },
+    { nombre: "crear_inventario", descripcion: "Permiso para crear inventario" },
+    { nombre: "editar_inventario", descripcion: "Permiso para editar inventario" },
+
     
 
     // Perfil

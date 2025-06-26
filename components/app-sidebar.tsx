@@ -114,6 +114,13 @@ const operacionesItems = [
     permiso: "ver_almacen",
   },
   {
+    title: "inventario",
+    url: "/inventario",
+    icon: BoxIcon,
+    permiso: "ver_inventario",
+  },
+  
+  {
     title: "Cajas",
     url: "/caja",
     icon: LayersIcon,
