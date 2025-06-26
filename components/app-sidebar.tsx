@@ -114,6 +114,12 @@ const items = [
     icon: Users2,
     permiso: "ver_proveedores",
   },
+  {
+    title: "Productos",
+    url: "/producto",
+    icon: BoxIcon,
+    permiso: "ver_productos",
+  },
 
 
 
