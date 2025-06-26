@@ -54,17 +54,31 @@ const mantenimientoItems = [
   },
 ];
 
-
-
-
-// Menu items con permisos necesarios (sin los items de mantenimiento)
-const items = [
-
+// Agrupaciones lógicas
+const catalogoItems = [
   {
     title: "Clientes",
     url: "/clientes",
     icon: Users,
     permiso: "ver_clientes",
+  },
+  {
+    title: "Proveedores",
+    url: "/proveedor",
+    icon: Users2,
+    permiso: "ver_proveedores",
+  },
+  {
+    title: "Productos",
+    url: "/producto",
+    icon: BoxIcon,
+    permiso: "ver_productos",
+  },
+  {
+    title: "Categorias",
+    url: "/categorias",
+    icon: LayersIcon,
+    permiso: "ver_categorias",
   },
   {
     title: "Monedas",
@@ -79,28 +93,19 @@ const items = [
     permiso: "ver_impuestos",
   },
   {
-    title: "Categorias",
-    url: "/categorias",
-    icon: LayersIcon,
-    permiso: "ver_categorias",
-  },
-  {
     title: "Unidades de Medida",
     url: "/unidad-medidas",
     icon: ScaleIcon,
     permiso: "ver_unidad_medidas",
   },
+];
+
+const operacionesItems = [
   {
     title: "Sucursales",
     url: "/sucursales",
     icon: Building2Icon,
     permiso: "ver_sucursales",
-  },
-  {
-    title: "Cajas",
-    url: "/caja",
-    icon: LayersIcon,
-    permiso: "ver_caja",
   },
   {
     title: "Almacenes",
@@ -109,21 +114,11 @@ const items = [
     permiso: "ver_almacen",
   },
   {
-    title: "Proveedores",
-    url: "/proveedor",
-    icon: Users2,
-    permiso: "ver_proveedores",
+    title: "Cajas",
+    url: "/caja",
+    icon: LayersIcon,
+    permiso: "ver_caja",
   },
-  {
-    title: "Productos",
-    url: "/producto",
-    icon: BoxIcon,
-    permiso: "ver_productos",
-  },
-
-
-
-
 ];
 
 export async function AppSidebar() {
@@ -131,42 +126,88 @@ export async function AppSidebar() {
   const permisosUsuario = usuario?.Permiso || [];
 
   // Filtrar los ítems basados en los permisos del usuario
-  const filteredItems = items.filter(item =>
-    permisosUsuario.includes(item.permiso)
-  );
+  const filteredCatalogo = catalogoItems.filter(item => permisosUsuario.includes(item.permiso));
+  const filteredOperaciones = operacionesItems.filter(item => permisosUsuario.includes(item.permiso));
 
   // Filtrar los ítems de mantenimiento basados en los permisos del usuario
   const filteredMantenimientoItems = mantenimientoItems.filter(item =>
     permisosUsuario.includes(item.permiso)
   );
 
-
   // Solo mostrar la sección de mantenimiento si hay al menos un ítem con permiso
   const showMantenimiento = filteredMantenimientoItems.length > 0;
-
 
   return (
     <Sidebar collapsible="icon" variant="floating">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="flex justify-between items-center">
-            <span>Sistema Clinica</span>
+            <span>Sistema POS </span>
+            
             <ToggleThemeButton />
           </SidebarGroupLabel>
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {filteredItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon size={16} className="p-0" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-
+              {/* Catálogos */}
+              {filteredCatalogo.length > 0 && (
+                <Collapsible className="group/collapsible">
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton>
+                        <LayersIcon size={16} className="p-0" />
+                        <span>Catálogos</span>
+                        <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                        <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {filteredCatalogo.map((item) => (
+                          <SidebarMenuSubItem key={item.title}>
+                            <SidebarMenuSubButton asChild>
+                              <Link href={item.url}>
+                                <item.icon size={16} className="p-0" />
+                                <span>{item.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              )}
+              {/* Operaciones */}
+              {filteredOperaciones.length > 0 && (
+                <Collapsible className="group/collapsible">
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton>
+                        <BoxIcon size={16} className="p-0" />
+                        <span>Operaciones</span>
+                        <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                        <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {filteredOperaciones.map((item) => (
+                          <SidebarMenuSubItem key={item.title}>
+                            <SidebarMenuSubButton asChild>
+                              <Link href={item.url}>
+                                <item.icon size={16} className="p-0" />
+                                <span>{item.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              )}
+              {/* Mantenimiento */}
               {showMantenimiento && (
                 <Collapsible className="group/collapsible">
                   <SidebarMenuItem>
@@ -194,7 +235,6 @@ export async function AppSidebar() {
                   </SidebarMenuItem>
                 </Collapsible>
               )}
-
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
