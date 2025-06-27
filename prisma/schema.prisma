@@ -42,6 +42,13 @@ enum CxCEstado {
   cerrado
 }
 
+enum EstadoOrdenCompra {
+  pendiente
+  aprobada
+  recibida
+  anulada
+}
+
 model Rol {
   id             String       @id @default(uuid())
   nombre         String       @unique
@@ -164,6 +171,8 @@ model Almacen {
 
   sucursal    Sucursal?    @relation(fields: [sucursalId], references: [id])
   inventarios Inventario[]
+
+  OrdenCompra OrdenCompra[]
 }
 
 model Categoria {
@@ -382,24 +391,26 @@ model Pago {
 }
 
 model OrdenCompra {
-  id           String        @id @default(uuid())
+  id           String            @id @default(uuid())
   proveedor_id String
   empleado_id  String
-  fecha_orden  DateTime      @default(now())
-  estado       TipoDocumento
+  fecha_orden  DateTime          @default(now())
+  estado       EstadoOrdenCompra @default(pendiente)
   total        Float
   moneda_id    String
+  almacen_id   String            // <- NUEVO: almacén al que se ingresarán los productos
 
-  proveedor Proveedor            @relation(fields: [proveedor_id], references: [id])
-  empleado  Empleado             @relation("EmpleadoOC", fields: [empleado_id], references: [id])
-  moneda    Moneda               @relation(fields: [moneda_id], references: [id])
-  detalle   DetalleOrdenCompra[]
-
-  DevolucionCompra DevolucionCompra[]
+  proveedor    Proveedor            @relation(fields: [proveedor_id], references: [id])
+  empleado     Empleado             @relation("EmpleadoOC", fields: [empleado_id], references: [id])
+  moneda       Moneda               @relation(fields: [moneda_id], references: [id])
+  almacen      Almacen              @relation(fields: [almacen_id], references: [id])
+  detalle      DetalleOrdenCompra[]
+  devoluciones DevolucionCompra[]
 }
 
+
 model DetalleOrdenCompra {
-  id               String @id @default(uuid())
+  id               String       @id @default(uuid())
   orden_compra_id  String
   producto_id      String
   unidad_medida_id String
@@ -411,6 +422,11 @@ model DetalleOrdenCompra {
   producto     Producto     @relation(fields: [producto_id], references: [id])
   unidadMedida UnidadMedida @relation(fields: [unidad_medida_id], references: [id])
 }
+
+
+
+
+
 
 model DevolucionVenta {
   id         String   @id @default(uuid())

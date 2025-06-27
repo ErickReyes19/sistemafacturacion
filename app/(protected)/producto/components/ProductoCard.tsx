@@ -66,7 +66,7 @@ export function ProductoCard({ producto }: { producto: ProductoType }) {
                   Precio de Compra
                 </div>
                 <div className="text-2xl font-bold text-blue-600">
-                  ${producto.precio_compra.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+                  L{producto.precio_compra.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
                 </div>
                 <div className="text-xs text-muted-foreground">{producto.moneda && `Moneda: ${producto.moneda}`}</div>
               </div>
@@ -78,7 +78,7 @@ export function ProductoCard({ producto }: { producto: ProductoType }) {
                   Precio de Venta
                 </div>
                 <div className="text-2xl font-bold text-green-600">
-                  ${producto.precio_venta.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+                  L {producto.precio_venta.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
                 </div>
                 <div className="text-xs text-muted-foreground">Por {producto.unidadBase || "unidad"}</div>
               </div>
@@ -100,7 +100,7 @@ export function ProductoCard({ producto }: { producto: ProductoType }) {
                 <div>
                   <div className="text-xs text-green-600 mb-1">Ganancia por Unidad</div>
                   <div className="text-xl font-bold text-green-700">
-                    ${Number(profit).toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+                    L {Number(profit).toLocaleString("es-ES", { minimumFractionDigits: 2 })}
                   </div>
                 </div>
               </div>
