@@ -18,5 +18,13 @@ export type Producto = {
     activo?: boolean;
     creado_at?: Date;
     actualizado_at?: Date;
+    unidades?: ProductoUnidad[];  // ← Nuevo
 }
+
+export type ProductoUnidad = {
+    unidad_medida_id: string;
+    factor: number;
+    unidadMedida?: string;
+  };
+  
 

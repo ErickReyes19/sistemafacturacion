@@ -45,30 +45,39 @@ export async function getProductosActivos(): Promise<Producto[]> {
     where: { activo: true },
     include: {
       unidadBase: true,
+      unidades: {                      // ‹‹-- incluimos las unidades adicionales
+        include: { unidadMedida: true }
+      },
       categoria: true,
       moneda: true,
       impuesto: true,
-      unidades: true,
     },
-    orderBy: { nombre: 'asc' }
+    orderBy: { nombre: "asc" },
   });
-  return records.map(r => ({
-    id: r.id,
-    sku: r.sku,
-    nombre: r.nombre,
-    activo: r.activo,
-    impuesto_id: r.impuesto_id ?? "",
-    impuesto: r.impuesto?.nombre ?? "",
-    creado_at: r.creado_at,
-    actualizado_at: r.actualizado_at,
+
+  return records.map((r) => ({
+    id:               r.id,
+    sku:              r.sku,
+    nombre:           r.nombre,
+    descripcion:      r.descripcion ?? "",
+    precio_compra:    r.precio_compra,
+    precio_venta:     r.precio_venta,
     unidad_medida_id: r.unidad_medida_id,
-    unidadBase: r.unidadBase?.nombre ?? "",
-    categoria_id: r.categoria_id,
-    categoria: r.categoria?.nombre ?? "",
-    moneda_id: r.moneda_id,
-    moneda: r.moneda?.nombre ?? "",
-    precio_compra: r.precio_compra,
-    precio_venta: r.precio_venta
+    unidadBase:       r.unidadBase?.nombre ?? "",
+    categoria_id:     r.categoria_id,
+    categoria:        r.categoria?.nombre ?? "",
+    moneda_id:        r.moneda_id,
+    moneda:           r.moneda?.nombre ?? "",
+    impuesto_id:      r.impuesto_id ?? "",
+    impuesto:         r.impuesto?.nombre ?? "",
+    activo:           r.activo,
+    creado_at:        r.creado_at,
+    actualizado_at:   r.actualizado_at,
+    unidades:         r.unidades.map((pu) => ({
+      unidad_medida_id: pu.unidad_medida_id,
+      factor:           pu.factor,
+      unidadMedida:     pu.unidadMedida?.nombre ?? "",
+    })),
   }));
 }
 
@@ -114,7 +123,7 @@ export async function createProducto(data: Producto): Promise<Producto> {
     data: {
       nombre: data.nombre,
       activo: true,
-      descripcion : data.descripcion,
+      descripcion: data.descripcion,
       unidad_medida_id: data.unidad_medida_id,
       categoria_id: data.categoria_id,
       moneda_id: data.moneda_id,
@@ -177,5 +186,5 @@ export async function updateProducto(id: string, data: Partial<Producto>): Promi
     moneda_id: r.moneda_id,
     precio_compra: r.precio_compra,
     precio_venta: r.precio_venta
-    };
+  };
 }

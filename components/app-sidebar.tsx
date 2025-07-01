@@ -121,6 +121,14 @@ const operacionesItems = [
   },
   
   {
+    title: "Ordenes de compra",
+    url: "/orden-compra",
+    icon: BoxIcon,
+    permiso: "ver_ordenes_compra",
+  },
+  
+
+  {
     title: "Cajas",
     url: "/caja",
     icon: LayersIcon,

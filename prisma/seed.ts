@@ -103,6 +103,10 @@ async function main() {
     { nombre: "ver_movimientos_inventario", descripcion: "Permiso para ver los movimientos de inventario" },
     { nombre: "crear_movimientos_inventario", descripcion: "Permiso para crear movimientos de inventario" },
 
+    // Orden de compra
+    { nombre: "ver_ordenes_compra", descripcion: "Permiso para ver las órdenes de compra" },
+    { nombre: "crear_ordenes_compra", descripcion: "Permiso para crear órdenes de compra" },
+    { nombre: "editar_ordenes_compra", descripcion: "Permiso para editar órdenes de compra" },
     
 
     // Perfil

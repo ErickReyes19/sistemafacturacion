@@ -13,67 +13,51 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { MovimientoInventario } from "../../../type";
+import { OrdenCompra } from "../type";
 
-export const columns: ColumnDef<MovimientoInventario>[] = [
+export const columns: ColumnDef<OrdenCompra>[] = [
 
   {
-    accessorKey: "inventario.almacen",
+    accessorKey: "almacen.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="text-left"
       >
-        Almacen
+        Nombre
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "producto",
+    accessorKey: "empleado.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="text-left"
       >
-        Producto
+        Empleado
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
-    accessorKey: "referencia",
+    accessorKey: "proveedor.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="text-left"
       >
-        Referencia
+        Proveedor
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const id = row.getValue("referencia") as string | null | undefined;
-
-      if (!id) {
-        return <span className="text-muted-foreground italic">Sin referencia</span>;
-      }
-
-      return (
-        <Link
-          href={`/orden-compra/${id}/detalle`}
-          className="text-blue-600 underline hover:text-blue-800"
-        >
-          Ver orden
-        </Link>
-      );
-    },
-  },  
+  },
   {
-    accessorKey: "fecha",
+    accessorKey: "fecha_orden",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -85,60 +69,19 @@ export const columns: ColumnDef<MovimientoInventario>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const fecha = row.getValue("fecha") as Date;
-      return fecha ? fecha.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      }) : '-';
+      const raw = new Date(row.getValue("fecha_orden"));
+      const date = raw ? new Date(raw) : null;
+      return date ? date.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" }) : "-";
     },
   },
-  {
-    accessorKey: "cantidad",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Cantidad
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "tipo",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Tipo
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "observaciones",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="text-left"
-      >
-        Observaciones
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-  },
+
+
   {
     id: "actions",
     header: "Acciones",
     cell: ({ row }) => {
-      const inventario = row.original;
+      const ordenCompra = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -149,8 +92,11 @@ export const columns: ColumnDef<MovimientoInventario>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <Link href={`/inventario/${inventario.id}/edit`}>
+            {/* <Link href={`/orden-compra/${ordenCompra.id}/edit`}>
               <DropdownMenuItem>Editar</DropdownMenuItem>
+            </Link> */}
+            <Link href={`/orden-compra/${ordenCompra.id}/detalle`}>
+              <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
         </DropdownMenu>

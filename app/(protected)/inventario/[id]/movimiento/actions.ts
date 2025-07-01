@@ -35,6 +35,7 @@ export async function obtenerMovimientosPorInventario(
       tipo: r.tipo,
       producto: r.inventario?.producto?.nombre ?? "",
       cantidad: r.cantidad,
+      referencia: r.referencia ?? "",
       fecha: r.fecha,
       observaciones: r.descripcion ?? "",
       inventario: {

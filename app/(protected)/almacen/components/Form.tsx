@@ -47,9 +47,9 @@ export function AlmacenFormulario({
   });
 
   // // Verificación de validez antes del submit
-  // const { formState } = form;
-
+  
   // //forma de saber si un form esta valido o no
+  // const { formState } = form;
   // const isValid = formState.errors;
   // console.log("isValid");
   // console.log(isValid);

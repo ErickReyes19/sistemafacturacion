@@ -18,6 +18,7 @@ export type MovimientoInventario = {
   tipo: MovimientoTipo;
   producto?: string;
   cantidad: number;
+  referencia?: string;
   fecha: Date;
   observaciones?: string;
   inventario?: Inventario; // Relación opcional con Inventario
